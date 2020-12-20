@@ -1,0 +1,213 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Icons/TrebleClef.svg" type="Texture" id=1]
+[ext_resource path="res://Icons/BassClef2.png" type="Texture" id=2]
+[ext_resource path="res://Icons/WholeNote.png" type="Texture" id=3]
+[ext_resource path="res://Clef.gd" type="Script" id=4]
+[ext_resource path="res://Note.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Fonts/Roboto-Medium.ttf" type="DynamicFontData" id=6]
+
+[sub_resource type="DynamicFont" id=2]
+size = 14
+font_data = ExtResource( 6 )
+
+[sub_resource type="DynamicFont" id=3]
+font_data = ExtResource( 6 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 50, 150 )
+
+[node name="Clef" type="Area2D"]
+script = ExtResource( 4 )
+Note = ExtResource( 5 )
+
+[node name="Staff" type="Polygon2D" parent="."]
+polygon = PoolVector2Array( 0, 0, 0, 247.5, 460, 247.5, 460, 0 )
+
+[node name="TrebleClef" type="Sprite" parent="Staff"]
+position = Vector2( 0, 43 )
+scale = Vector2( 0.105263, 0.1 )
+texture = ExtResource( 1 )
+centered = false
+
+[node name="BassClef" type="Sprite" parent="Staff"]
+position = Vector2( 0, 73 )
+scale = Vector2( 0.12, 0.12 )
+texture = ExtResource( 2 )
+offset = Vector2( 400, 360 )
+
+[node name="WholeNote" type="Sprite" parent="Staff"]
+visible = false
+position = Vector2( 135, 267.5 )
+scale = Vector2( 0.15, 0.15 )
+texture = ExtResource( 3 )
+
+[node name="StaffLine5" type="Line2D" parent="Staff"]
+position = Vector2( 0, 73 )
+points = PoolVector2Array( 0, 0, 460, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointBelow" type="Position2D" parent="Staff/StaffLine5"]
+position = Vector2( -24, 12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/StaffLine5"]
+position = Vector2( -24, 0 )
+
+[node name="PointAbove" type="Position2D" parent="Staff/StaffLine5"]
+position = Vector2( -24, -12.5 )
+
+[node name="StaffLine4" type="Line2D" parent="Staff"]
+position = Vector2( 0, 98 )
+points = PoolVector2Array( 0, 0, 460, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointBelow" type="Position2D" parent="Staff/StaffLine4"]
+position = Vector2( -24, 12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/StaffLine4"]
+position = Vector2( -24, 0 )
+
+[node name="StaffLine3" type="Line2D" parent="Staff"]
+position = Vector2( 0, 123 )
+points = PoolVector2Array( 0, 0, 460, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointBelow" type="Position2D" parent="Staff/StaffLine3"]
+position = Vector2( -24, 12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/StaffLine3"]
+position = Vector2( -24, 0 )
+
+[node name="StaffLine2" type="Line2D" parent="Staff"]
+position = Vector2( 0, 148 )
+points = PoolVector2Array( 0, 0, 460, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointBelow" type="Position2D" parent="Staff/StaffLine2"]
+position = Vector2( -24, 12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/StaffLine2"]
+position = Vector2( -24, 0 )
+
+[node name="StaffLine1" type="Line2D" parent="Staff"]
+position = Vector2( 0, 173 )
+points = PoolVector2Array( 0, 0, 460, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointBelow" type="Position2D" parent="Staff/StaffLine1"]
+position = Vector2( -24, 12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/StaffLine1"]
+position = Vector2( -24, 0 )
+
+[node name="LegerLineBelow1" type="Line2D" parent="Staff"]
+position = Vector2( -51, 198 )
+points = PoolVector2Array( 0, 0, 54, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointBelow" type="Position2D" parent="Staff/LegerLineBelow1"]
+position = Vector2( 27, 12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/LegerLineBelow1"]
+position = Vector2( 27, 0 )
+
+[node name="LegerLineBelow2" type="Line2D" parent="Staff"]
+position = Vector2( -51, 223 )
+points = PoolVector2Array( 0, 0, 54, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointBelow" type="Position2D" parent="Staff/LegerLineBelow2"]
+position = Vector2( 27, 12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/LegerLineBelow2"]
+position = Vector2( 27, 0 )
+
+[node name="LegerLineAbove1" type="Line2D" parent="Staff"]
+position = Vector2( -51, 48 )
+points = PoolVector2Array( 0, 0, 54, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointAbove" type="Position2D" parent="Staff/LegerLineAbove1"]
+position = Vector2( 27, -12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/LegerLineAbove1"]
+position = Vector2( 27, 0 )
+
+[node name="LegerLineAbove2" type="Line2D" parent="Staff"]
+position = Vector2( -51, 23 )
+points = PoolVector2Array( 0, 0, 54, 0 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="PointAbove" type="Position2D" parent="Staff/LegerLineAbove2"]
+position = Vector2( 27, -12.5 )
+
+[node name="PointOn" type="Position2D" parent="Staff/LegerLineAbove2"]
+position = Vector2( 27, 0 )
+
+[node name="VertLine" type="Line2D" parent="Staff"]
+position = Vector2( 0, 73 )
+points = PoolVector2Array( 0, 0, 0, 100 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="VertLine2" type="Line2D" parent="Staff"]
+position = Vector2( 0, 73 )
+points = PoolVector2Array( 460, 0, 460, 100 )
+width = 3.0
+default_color = Color( 0, 0, 0, 1 )
+
+[node name="Perc0_VertLine" type="Line2D" parent="Staff"]
+position = Vector2( -10, 0 )
+points = PoolVector2Array( 0, 0, 0, 247.5 )
+width = 2.0
+default_color = Color( 0.470588, 0.470588, 0.470588, 1 )
+
+[node name="Label" type="Label" parent="Staff/Perc0_VertLine"]
+visible = false
+margin_right = 40.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 0.996078 )
+text = "0%"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Perc100_VertLine" type="Line2D" parent="Staff"]
+position = Vector2( -10, 0 )
+points = PoolVector2Array( 0, 0, 0, 247.5 )
+width = 2.0
+default_color = Color( 0.470588, 0.470588, 0.470588, 1 )
+
+[node name="Label" type="Label" parent="Staff/Perc100_VertLine"]
+visible = false
+margin_right = 40.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "100%"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Perc50_VertLine" type="Line2D" parent="Staff"]
+position = Vector2( -10, 0 )
+points = PoolVector2Array( 0, 0, 0, 247.5 )
+width = 2.0
+default_color = Color( 0.470588, 0.470588, 0.470588, 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 50, 125 )
+shape = SubResource( 1 )
+[connection signal="body_entered" from="." to="." method="_on_Clef_body_entered"]

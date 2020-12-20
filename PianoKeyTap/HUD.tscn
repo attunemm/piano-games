@@ -1,0 +1,500 @@
+[gd_scene load_steps=31 format=2]
+
+[ext_resource path="res://Fonts/Roboto-Medium.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://HUD.gd" type="Script" id=2]
+[ext_resource path="res://StartButton.gd" type="Script" id=3]
+[ext_resource path="res://Sprites/A.png" type="Texture" id=4]
+[ext_resource path="res://Icons/off_icon.svg" type="Texture" id=5]
+[ext_resource path="res://Icons/on_icon.svg" type="Texture" id=6]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://Fonts/Roboto-Medium.ttf"
+
+[sub_resource type="DynamicFont" id=2]
+size = 56
+outline_color = Color( 0.623529, 0.447059, 0.0196078, 1 )
+font_data = SubResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 40
+font_data = ExtResource( 1 )
+
+[sub_resource type="ButtonGroup" id=4]
+
+[sub_resource type="DynamicFont" id=5]
+size = 40
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 40
+font_data = ExtResource( 1 )
+
+[sub_resource type="ButtonGroup" id=7]
+resource_name = "ColorGroup"
+
+[sub_resource type="DynamicFontData" id=8]
+resource_local_to_scene = true
+font_path = "res://Fonts/Roboto-Medium.ttf"
+
+[sub_resource type="DynamicFont" id=9]
+size = 100
+font_data = SubResource( 8 )
+
+[sub_resource type="Animation" id=10]
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Message:custom_fonts/font:size")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 64 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Message:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=11]
+length = 1.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Message:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Message:custom_fonts/font:size")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.7, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 64, 128, 64 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Message:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.7, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+
+[sub_resource type="DynamicFont" id=12]
+size = 56
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=13]
+size = 64
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=14]
+bg_color = Color( 0.188235, 0.266667, 0.533333, 1 )
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_left = 8.0
+expand_margin_right = 8.0
+expand_margin_top = 8.0
+expand_margin_bottom = 8.0
+
+[sub_resource type="DynamicFont" id=15]
+size = 64
+outline_color = Color( 0.0980392, 0.772549, 0.156863, 1 )
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=16]
+size = 32
+font_data = ExtResource( 1 )
+
+[sub_resource type="StreamTexture" id=24]
+flags = 4
+load_path = "res://.import/A_no_hat.png-3669523387eee9d6332be96da418e3a9.stex"
+
+[sub_resource type="StreamTexture" id=17]
+flags = 4
+load_path = "res://.import/B_no_hat.png-875d201782c18d9c2c9ba01a5c0e5962.stex"
+
+[sub_resource type="StreamTexture" id=18]
+flags = 4
+load_path = "res://.import/C_no_hat.png-9a8d133be06e4dc792711d298106f12c.stex"
+
+[sub_resource type="StreamTexture" id=19]
+flags = 4
+load_path = "res://.import/D_no_hat.png-3d1a9028acdc17a22f8171456e3f066a.stex"
+
+[sub_resource type="StreamTexture" id=20]
+flags = 4
+load_path = "res://.import/E_no_hat2.png-5ac3de0c559699dc44534de8382848e7.stex"
+
+[sub_resource type="StreamTexture" id=21]
+flags = 4
+load_path = "res://.import/F no hat 2.png-580a6a9635918993511cd7b0bb496195.stex"
+
+[sub_resource type="StreamTexture" id=22]
+flags = 4
+load_path = "res://.import/G_no_hat.png-51d8925ca610c99992719aaaed07ee18.stex"
+
+[sub_resource type="DynamicFont" id=23]
+size = 42
+font_data = ExtResource( 1 )
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource( 2 )
+
+[node name="KeyOptionsBox" type="MarginContainer" parent="."]
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 860.0
+margin_right = 703.0
+margin_bottom = -51.9995
+mouse_filter = 1
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="KeyOptionsBox"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 663.0
+margin_bottom = 148.0
+custom_constants/separation = -4
+
+[node name="HBoxNotes" type="HBoxContainer" parent="KeyOptionsBox/VBoxContainer"]
+margin_right = 643.0
+margin_bottom = 66.0
+
+[node name="Label2" type="Label" parent="KeyOptionsBox/VBoxContainer/HBoxNotes"]
+margin_right = 165.0
+margin_bottom = 66.0
+size_flags_vertical = 5
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Notes:"
+valign = 1
+
+[node name="CBwhite" type="CheckBox" parent="KeyOptionsBox/VBoxContainer/HBoxNotes"]
+margin_left = 169.0
+margin_right = 328.0
+margin_bottom = 66.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color_disabled = Color( 1, 1, 1, 0.784314 )
+custom_colors/font_color = Color( 1, 1, 1, 0.392157 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+pressed = true
+group = SubResource( 4 )
+text = "Natural"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CBsharps" type="CheckBox" parent="KeyOptionsBox/VBoxContainer/HBoxNotes"]
+margin_left = 332.0
+margin_right = 465.0
+margin_bottom = 66.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color_disabled = Color( 1, 1, 1, 0.392157 )
+custom_colors/font_color = Color( 1, 1, 1, 0.392157 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+group = SubResource( 4 )
+text = "Sharp"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CBflats" type="CheckBox" parent="KeyOptionsBox/VBoxContainer/HBoxNotes"]
+margin_left = 469.0
+margin_right = 564.0
+margin_bottom = 66.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color_disabled = Color( 1, 1, 1, 0.784314 )
+custom_colors/font_color = Color( 1, 1, 1, 0.392157 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+group = SubResource( 4 )
+text = "Flat"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CBall" type="CheckBox" parent="KeyOptionsBox/VBoxContainer/HBoxNotes"]
+margin_left = 568.0
+margin_right = 643.0
+margin_bottom = 66.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color_disabled = Color( 1, 1, 1, 0.784314 )
+custom_colors/font_color = Color( 1, 1, 1, 0.392157 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+group = SubResource( 4 )
+text = "All"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxKeys" type="HBoxContainer" parent="KeyOptionsBox/VBoxContainer"]
+margin_top = 62.0
+margin_right = 643.0
+margin_bottom = 128.0
+
+[node name="Label2" type="Label" parent="KeyOptionsBox/VBoxContainer/HBoxKeys"]
+margin_right = 136.0
+margin_bottom = 66.0
+size_flags_vertical = 5
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "Keys:"
+valign = 1
+
+[node name="cbMoveKeys" type="CheckButton" parent="KeyOptionsBox/VBoxContainer/HBoxKeys"]
+margin_left = 147.0
+margin_right = 394.0
+margin_bottom = 66.0
+hint_tooltip = "Select to have the keys change location between every player."
+size_flags_horizontal = 6
+custom_icons/off = ExtResource( 5 )
+custom_icons/on = ExtResource( 6 )
+custom_fonts/font = SubResource( 5 )
+custom_colors/font_color_disabled = Color( 1, 1, 1, 0.784314 )
+custom_colors/font_color = Color( 1, 1, 1, 0.392157 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+text = "Moving"
+expand_icon = true
+
+[node name="Label" type="Label" parent="KeyOptionsBox/VBoxContainer/HBoxKeys"]
+margin_left = 405.0
+margin_top = 9.0
+margin_right = 533.0
+margin_bottom = 57.0
+custom_fonts/font = SubResource( 6 )
+text = "Colors:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CBrainbow" type="CheckBox" parent="KeyOptionsBox/VBoxContainer/HBoxKeys"]
+margin_left = 537.0
+margin_right = 588.0
+margin_bottom = 66.0
+hint_tooltip = "Match the color of the key to the color of the player who plays that note."
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color = Color( 1, 1, 1, 0.392157 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+pressed = true
+group = SubResource( 7 )
+text = "7"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CBbinary" type="CheckBox" parent="KeyOptionsBox/VBoxContainer/HBoxKeys"]
+margin_left = 592.0
+margin_right = 643.0
+margin_bottom = 66.0
+hint_tooltip = "Correct selection: highlight key; Incorrect selection: gray out key"
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color_disabled = Color( 1, 1, 1, 0.784314 )
+custom_colors/font_color = Color( 1, 1, 1, 0.392157 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+group = SubResource( 7 )
+text = "2"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Message" type="Label" parent="."]
+visible = false
+margin_left = 700.0
+margin_top = 350.0
+margin_right = 1082.0
+margin_bottom = 505.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_fonts/font = SubResource( 9 )
+custom_colors/font_color = Color( 0.996078, 0.635294, 0.0117647, 1 )
+text = "Game Over!"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+method_call_mode = 1
+anims/init = SubResource( 10 )
+anims/show_message() = SubResource( 11 )
+
+[node name="ScoreBox" type="MarginContainer" parent="."]
+anchor_right = 1.0
+margin_left = 1550.0
+margin_top = 30.0
+margin_right = -63.0
+margin_bottom = 182.0
+grow_horizontal = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScoreBox"]
+margin_right = 307.0
+margin_bottom = 152.0
+alignment = 2
+
+[node name="StartButton" type="Button" parent="ScoreBox/VBoxContainer"]
+margin_right = 307.0
+margin_bottom = 72.0
+custom_fonts/font = SubResource( 12 )
+text = "Start"
+script = ExtResource( 3 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScoreBox/VBoxContainer"]
+margin_top = 76.0
+margin_right = 307.0
+margin_bottom = 152.0
+alignment = 1
+
+[node name="Label" type="Label" parent="ScoreBox/VBoxContainer/HBoxContainer"]
+margin_left = 54.0
+margin_right = 213.0
+margin_bottom = 76.0
+size_flags_vertical = 5
+custom_fonts/font = SubResource( 2 )
+text = "Score "
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" type="Label" parent="ScoreBox/VBoxContainer/HBoxContainer"]
+margin_left = 217.0
+margin_right = 253.0
+margin_bottom = 76.0
+custom_fonts/font = SubResource( 13 )
+text = "0"
+align = 2
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StreakLabel" type="Label" parent="."]
+visible = false
+margin_left = 722.0
+margin_top = 205.0
+margin_right = 1117.0
+margin_bottom = 360.0
+custom_styles/normal = SubResource( 14 )
+custom_fonts/font = SubResource( 15 )
+custom_colors/font_color = Color( 0.0980392, 0.772549, 0.156863, 1 )
+text = "Streak bonus:
+10 points!!"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CopyrightLabel" type="Label" parent="."]
+anchor_bottom = 1.0
+margin_left = 40.0
+margin_top = 1020.0
+margin_right = 672.0
+margin_bottom = -22.0
+custom_fonts/font = SubResource( 16 )
+custom_colors/font_color = Color( 0.705882, 0.705882, 0.705882, 1 )
+text = "Copyright 2020 Attune Music and Math, LLC"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LivesBox" type="MarginContainer" parent="."]
+anchor_top = 0.94
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 450.0
+margin_right = 4.00006
+mouse_filter = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Life9" type="Sprite" parent="LivesBox"]
+visible = false
+position = Vector2( 943, -4 )
+scale = Vector2( 0.08, 0.08 )
+texture = ExtResource( 4 )
+
+[node name="Life" type="Sprite" parent="LivesBox"]
+position = Vector2( 943, -5 )
+scale = Vector2( 0.16, 0.16 )
+texture = SubResource( 24 )
+
+[node name="Life2" type="Sprite" parent="LivesBox"]
+position = Vector2( 1025, -5 )
+scale = Vector2( 0.16, 0.16 )
+texture = SubResource( 17 )
+
+[node name="Life3" type="Sprite" parent="LivesBox"]
+position = Vector2( 1101, -5 )
+scale = Vector2( 0.16, 0.16 )
+texture = SubResource( 18 )
+
+[node name="Life4" type="Sprite" parent="LivesBox"]
+position = Vector2( 1170, -5 )
+scale = Vector2( 0.16, 0.16 )
+texture = SubResource( 19 )
+
+[node name="Life5" type="Sprite" parent="LivesBox"]
+position = Vector2( 1245, -5 )
+scale = Vector2( 0.16, 0.16 )
+texture = SubResource( 20 )
+
+[node name="Life6" type="Sprite" parent="LivesBox"]
+position = Vector2( 1317, -5 )
+scale = Vector2( 0.16, 0.16 )
+texture = SubResource( 21 )
+
+[node name="Life7" type="Sprite" parent="LivesBox"]
+position = Vector2( 1390, -5 )
+scale = Vector2( 0.1, 0.1 )
+texture = SubResource( 22 )
+
+[node name="InstructionsLabel" type="Label" parent="."]
+margin_left = 40.0
+margin_top = 50.0
+margin_right = 1168.0
+margin_bottom = 153.0
+custom_fonts/font = SubResource( 23 )
+text = "Adjust the settings below, then click \"Start\" to begin playing.
+Or, tap the keys to make up your own song."
+__meta__ = {
+"_edit_use_anchors_": false
+}

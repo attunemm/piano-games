@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://WhiteKeySB.gd" type="Script" id=3]
+
+[sub_resource type="ConcavePolygonShape2D" id=1]
+segments = PoolVector2Array( 0, 0, 52, 0, 52, 130, 104, 130, 104, 260, 0, 260 )
+
+[node name="WhiteKey" type="StaticBody2D"]
+input_pickable = true
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="WKInput" type="CollisionShape2D" parent="."]
+position = Vector2( 54, 260 )
+shape = SubResource( 1 )
+disabled = true
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="WhiteKeyRect" type="Polygon2D" parent="."]
+polygon = PoolVector2Array( 0, 0, 105, 0, 105, 520, 0, 520 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="WKCollision" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 0, 0, 52, 0, 52, 260, 104, 260, 104, 520, 0, 520, 0, 0, 0, 0 )

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Key.tscn" type="PackedScene" id=1]
+[ext_resource path="res://KeyBlack.gd" type="Script" id=2]
+
+[node name="KeyBlack" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="KeyShape" parent="." index="1"]
+color = Color( 0, 0, 0, 1 )
+polygon = PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0 )
+
+[node name="KeyCollision" parent="." index="2"]
+polygon = PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0 )

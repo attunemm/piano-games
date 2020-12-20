@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/Middle_G_sharp.ogg-28e2906fc8eb1973f92e550f61249fdd.oggstr"
+
+[deps]
+
+source_file="res://AudioFiles/Middle_G_sharp.ogg"
+dest_files=[ "res://.import/Middle_G_sharp.ogg-28e2906fc8eb1973f92e550f61249fdd.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
