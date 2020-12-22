@@ -10,7 +10,7 @@ const SHARP = 1 # only practice sharp notes
 const FLAT = 2 # only practice flat notes
 const ALL = 3 # practice a random mix of natural, sharp and flat notes
 const USER_SELECT = 4 # let the user toggle between natural, sharp, flat and all as desired
-var mode = USER_SELECT #ALL #FLAT #SHARP #NATURAL # change this to set what type of notes are practiced
+var mode = ALL #USER_SELECT #ALL #FLAT #SHARP #NATURAL # change this to set what type of notes are practiced
 var octave
 var player
 var defender 
