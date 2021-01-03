@@ -1,12 +1,50 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Frogger.gd" type="Script" id=1]
 [ext_resource path="res://Clef.tscn" type="PackedScene" id=2]
 [ext_resource path="res://PlayerSprite.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Note.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Icons/GearBlack.svg" type="Texture" id=5]
+[ext_resource path="res://Icons/LeftBlack.svg" type="Texture" id=6]
+[ext_resource path="res://ButtonWithIcon.tscn" type="PackedScene" id=8]
 
 [node name="Frogger" type="Node2D"]
 script = ExtResource( 1 )
 Staff = ExtResource( 2 )
 Player = ExtResource( 3 )
 Note = ExtResource( 4 )
+Btn = ExtResource( 8 )
+
+[node name="ExpandCollapse" type="TextureButton" parent="."]
+margin_left = 66.0
+margin_top = 754.0
+margin_right = 162.0
+margin_bottom = 850.0
+texture_normal = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureButton" type="TextureButton" parent="."]
+margin_top = 752.0
+margin_right = 96.0
+margin_bottom = 848.0
+texture_normal = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SettingsPanel" type="Polygon2D" parent="."]
+z_index = 1
+color = Color( 0.0509804, 0.105882, 0.403922, 1 )
+polygon = PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0 )

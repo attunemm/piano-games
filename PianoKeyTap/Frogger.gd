@@ -4,12 +4,14 @@ extends Node2D
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
+var note_bg
 var playing = false # set to false to stop the game
 var clef_x_offset = 150 # control the location of the clef on the screen
 var clef_y_offset = 120
 var clef_scale = 2.5 # make the clef larger
 var perc_offset_add_note = 0.8# percent of the way across the clef to add a note
 var player_y_offset # control up-down location of players
+var settings_panel
 # variables to hold the sub-scenes
 var clef
 var clef_new_width
@@ -17,7 +19,8 @@ var result_notes = Array() # hold pointers to the notes displaying results - so 
 export (PackedScene) var Staff
 export (PackedScene) var Player # PlayerSprite.tscn
 export (PackedScene) var Note # Note.tscn
-var notes = ['A','B','C','D','E','F','G']
+export (PackedScene) var Btn # ButtonWithIcon.tscn
+var notes = ['C','D','E','F','G','A','B']
 var numnotes = notes.size()
 var sel_player # store the handle to the selected player sprite
 var sel_note # store the handle to the selected note
@@ -49,11 +52,36 @@ var but_treble # select for treble clef
 var but_bass # select for bass clef
 var but_high # select for only high notes on clef (treble C to high C or bass C to middle C)
 var but_low # select for only low notes on clef (middle C to treble C or low C to bass C)
+var but_staff # select for only notes on the staff
+var but_leger # select for only notes above or below the staff
 var but_all # select for all notes (bass A to high D or Low A to middle F)
+var but_lines # select for only notes that are on a line
+var but_spaces # select for only notes that are not on a line
+var but_allnotes # select for all notes, lines adn spaces
+var region_bg
+var clef_bg
+var lbl_instructions
+var dynamic_font = DynamicFont.new()
+var arrow_rt
+var arrow_lt
 #print(numnotes)
+#var selected_texture=load("res://Icons/FilledSquareBlue.svg")
+#var unsel_texture = load('res://Icons/OpenSquareBlue.svg')
+#var selected_texture=load("res://Icons/FilledCircleGreenSmall.png")
+#var unsel_texture = load('res://Icons/UnfilledCircleGreenSmall.png')
+var selected_texture=load("res://Icons/HatWhiteFilled.png")
+var unsel_texture = load('res://Icons/HatWhiteUnfilled.png')
+var note_option_sel # string to track which option is selected
+var region_option_sel # string to track which option is selected
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# connect the settings expand/collapse button to code
+	$ExpandCollapse.connect("pressed", self, 'show_hide_settings')
+	arrow_rt = load('res://Icons/RightBlack.svg')
+	arrow_lt = load('res://Icons/LeftBlack.svg')
+	dynamic_font.font_data = load("res://Fonts/Roboto-Medium.ttf")
 	# load the clef
 	clef = Staff.instance()
 #	octave.set_scale_factor(scale_factor)
@@ -88,6 +116,8 @@ func _ready():
 	clef.connect("object_entered_clef", self, 'note_reached_end')
 	# add labels at 0%, 50%, 100% lines on clef
 	
+	lbl_instructions = add_label('Select the correct player before the note slides off the staff.',Vector2(clef_x_offset,50),50)
+	
 	var fontsz = 50
 	lbl0 = add_label('0%',Vector2(x0*clef_scale + clef_x_offset,clef_y_offset - fontsz),fontsz)
 	lbl50 = add_label('50%',Vector2(x50*clef_scale + clef_x_offset,clef_y_offset - fontsz),fontsz)
@@ -121,52 +151,168 @@ func _ready():
 		dx += player_spacing_x
 #		dx += sprite_size.x * player_scale + 10
 	# add user controlled options
-	var clef_bg = ButtonGroup.new()
+	clef_bg = Btn.instance() #ButtonGroup.new()
 	# treble or bass clef
-	but_treble = add_option(clef_bg,'Treble',true)
-	but_bass = add_option(clef_bg,'Bass',false)
-	but_treble.connect("pressed",self,'change_clef')
-	but_bass.connect("pressed",self,'change_clef')
+	clef_bg.init('Clef:',['Bass','Treble'],fontsz,true) #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
+	clef_bg.sel_changed()
+#	but_treble = add_button(clef_bg,'Treble',fontsz) #add_option(clef_bg,'Treble',true)
+#	but_bass = add_button(clef_bg,'Bass',fontsz) #add_option(clef_bg,'Bass',false)
+#	var new_code = false
+#	if new_code:
+#		var bt = but_treble.get_button()
+#		bt.pressed = true
+#		bt.connect("pressed",self,'change_clef')
+#		var bb = but_bass.get_button()
+#		bb.connect("pressed",self,'change_clef')
+#	else:
+#		but_treble.pressed = true
+#		but_treble.connect("pressed",self,'change_clef')
+#		but_bass.connect("pressed",self,'change_clef')
+#	change_notes(clef_bg)
+#	but_treble.set_expand_icon(true)
+#	but_bass.set_expand_icon(true)
 	
-	var note_bg = ButtonGroup.new()
-	but_high = add_option(note_bg,'High',true)
-	but_low = add_option(note_bg,'Low',true)
-	but_all = add_option(note_bg,'All',true)
-	note_bg.connect("changed",self,'change_notes')
+	region_bg = Btn.instance() #ButtonGroup.new()
+	region_bg.init('Region:',['Staff','Leger','All'],fontsz,true) #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
+	region_bg.sel_changed()
+#	region_bg = ButtonGroup.new()
+##	but_high = Button.new() #add_option(note_bg,'High',true)
+#	but_staff = add_button(region_bg,'Staff',fontsz)
+#	but_leger = add_button(region_bg,'Leger',fontsz)
+##	but_high = add_button(region_bg,'High')
+##	but_low = add_button(region_bg,'Low')
+#	but_all = add_button(region_bg,'All',fontsz)
+#	if new_code:
+#		var ba = but_all.get_button()
+#		ba.pressed = true
+#	else:
+#		but_all.pressed = true
+#	change_notes(region_bg) #but_low.icon = unsel_texture #selected_texture
+
+	note_bg = Btn.instance() #ButtonGroup.new()
+	note_bg.init('Notes:',['Lines','Spaces','All'],fontsz,true) #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
+	note_bg.sel_changed()
+	
+	# listen for changed signal
+	clef_bg.connect("selection_changed", self, "change_clef",[clef_bg])
+	region_bg.connect("selection_changed", self, "change_notes",[region_bg])
+	note_bg.connect("selection_changed", self, "change_notes",[note_bg])
+#	note_bg = ButtonGroup.new()
+##	but_high = Button.new() #add_option(note_bg,'High',true)
+#	but_lines = add_button(note_bg,'Lines',fontsz)
+#	but_spaces = add_button(note_bg,'Spaces',fontsz)
+#	but_allnotes = add_button(note_bg,'All',fontsz)
+#	if new_code:
+#		var bn = but_allnotes.get_button()
+#		bn.pressed = true
+#	else:
+#		but_allnotes.pressed = true
+#	change_notes(note_bg) #but_low.icon = unsel_texture #selected_texture
 
 	# add the buttons to hbox and vbox containers
-	var hbox1 = VBoxContainer.new() #HBoxContainer.new()
-	var hbox2 = VBoxContainer.new() #HBoxContainer.new()
-	var vbox = VBoxContainer.new()
+	var clefbox = VBoxContainer.new() #HBoxContainer.new()
+	var regionbox = VBoxContainer.new() #HBoxContainer.new()
+	var notesbox = VBoxContainer.new() #HBoxContainer.new()
+	var settingsbox = HBoxContainer.new()
 	
-	# Clef label
-	add_label('Clef:',Vector2(0,0),35, Color(1,1,1),hbox1)
-#	clef_lbl.text = 'Clef:'
-#	hbox1.add_child(clef_lbl)
-	hbox1.add_child(but_treble)
-	hbox1.add_child(but_bass)
-	add_label(' ',Vector2(0,0),35, Color(1,1,1),hbox1)
-	add_label('Notes:',Vector2(0,0),35, Color(1,1,1),hbox2)
-#	hbox2.add_child(clef_lbl)
-	hbox2.add_child(but_high)
-	hbox2.add_child(but_low)
-	hbox2.add_child(but_all)
+#	fontsz = 50
+#	# Clef options
+#	add_label('Clef:            ',Vector2(0,0),fontsz, Color(1,1,1),clefbox)
+#	clefbox.add_child(but_treble)
+#	clefbox.add_child(but_bass)
+#	add_label(' ',Vector2(0,0),fontsz, Color(1,1,1),clefbox)
+#
+#	# Region Options
+#	add_label('Region:       ',Vector2(0,0),fontsz, Color(1,1,1),regionbox)
+##	regionbox.add_child(clef_lbl)
+##	regionbox.add_child(but_high)
+##	regionbox.add_child(but_low)
+#	regionbox.add_child(but_staff)
+#	regionbox.add_child(but_leger)
+#	regionbox.add_child(but_all)
+#
+#	# Note options
+#	add_label('Notes:       ',Vector2(0,0),fontsz, Color(1,1,1),notesbox)
+#	notesbox.add_child(but_lines)
+#	notesbox.add_child(but_spaces)
+#	notesbox.add_child(but_allnotes)
 	
-	vbox.add_child(hbox1)
-	vbox.add_spacer(true)
-	vbox.add_child(hbox2)
+#	settingsbox.add_child(clefbox)
+#	settingsbox.add_spacer(true)
+#	settingsbox.add_spacer(true)
+#	settingsbox.add_child(regionbox)
+#	settingsbox.add_spacer(true)
+#	settingsbox.add_child(notesbox)
+#	var pn = PanelContainer.new()
+#	pn.add_child(clef_bg)
+#	settingsbox.add_child(pn)
+#	settingsbox.add_child(clef_bg)
+#	var sz = clef_bg.get_scene_size() #clef_bg.get_vbox_size()
+##	settingsbox.add_spacer(true)
+##	settingsbox.add_spacer(true)
+#	settingsbox.add_child(region_bg)
+#	var delta = 50
+#	var xn = sz.x + delta
+#	region_bg.position.x = sz.x 
+#	sz = region_bg.get_scene_size() #get_vbox_size()
+##	settingsbox.add_spacer(true)
+#	settingsbox.add_child(note_bg)
+#	note_bg.position.x = xn + sz.x + delta
 	
-	var panel = PanelContainer.new()
-	add_child(panel)
-	panel.add_child(vbox)
+#	settings_panel = Polygon2D.new() #PanelContainer.new()
+	var pg_pts = $SettingsPanel.polygon
+#	var xpanel = clef_x_offset
+#	var y
+#	for i in range(4):
+#		for j in range(2):
+#			pg_pts.append()
+	var sp_x0 = clef_x_offset
+	var sp_x1 = clef_x_offset + clef.get_width()*clef_scale # TODO: offset by clef width
+	var sp_y0 = clef_y_offset + clef.get_height()*clef_scale # TODO: offset by clef height
+	var sp_y1 = sp_y0 + 600
+	pg_pts[0][0] = sp_x0
+	pg_pts[0][1] = sp_y0
+	
+	pg_pts[1][0] = sp_x0
+	pg_pts[1][1] = sp_y1
+	
+	pg_pts[2][0] = sp_x1
+	pg_pts[2][1] = sp_y1
+	
+	pg_pts[3][0] = sp_x1
+	pg_pts[3][1] = sp_y0
+	print('pg_pts = ', pg_pts)
+	$SettingsPanel.polygon = pg_pts
+#	$CanvasLayer.add_child(settings_panel)
+#	$SettingsPanel.add_child(settingsbox)
+#	settings_panel.add_child(settingsbox)
+
+	$SettingsPanel.add_child(clef_bg)
+	var sz = clef_bg.get_scene_size() #clef_bg.get_vbox_size()
+	var delta = 50
+	var xdelta = 100
+	var xn = sp_x0 + xdelta
+	clef_bg.position.x = xn
+	clef_bg.position.y = sp_y0 + delta
+#	settingsbox.add_spacer(true)
+#	settingsbox.add_spacer(true)
+	$SettingsPanel.add_child(region_bg)
+	
+	xn = sz.x + xn + xdelta
+	region_bg.position.x = xn
+	region_bg.position.y = sp_y0 + delta
+	sz = region_bg.get_scene_size() #get_vbox_size()
+#	$SettingsPanel.add_spacer(true)
+	$SettingsPanel.add_child(note_bg)
+	note_bg.position.x = xn + sz.x + xdelta
+	note_bg.position.y = sp_y0 + delta
+	
 	# get the vbox size, to help position the panel
-	var vbox_size = vbox.rect_size
-	panel.rect_position = Vector2(20,clef_y_offset+(clef.get_height()*clef_scale-vbox_size.y)/2)
+#	var vbox_size = settingsbox.rect_size
+#	settings_panel.rect_position = Vector2(clef_x_offset,clef_y_offset+clef.get_height()*clef_scale)
 #	vbox.position = Vector2(20,100)
 	# add the start-stop game button
 	play_game_button = Button.new()
-	
-	var dynamic_font = DynamicFont.new()
 	dynamic_font.font_data = load("res://Fonts/Roboto-Medium.ttf")
 	play_game_button.set("custom_fonts/font",dynamic_font)
 	play_game_button.set("custom_colors/font_color",Color(1,1,1))
@@ -181,8 +327,10 @@ func _ready():
 	var pg_size = pg_label.rect_size
 #	play_game_button.rect_position = (Vector2(x_1stplayer/2-but_size.x/1.2,lbl_y+but_size.y))
 	play_game_button.set_size(pg_size+Vector2(2*lbl_dx,0))
+	but_size = play_game_button.get_size()
 	#lbl_y -= pg_size.y/2 # place higher on screen
-	play_game_button.rect_position = (Vector2(x_1stplayer/2-pg_size.x,lbl_y))
+#	play_game_button.rect_position = (Vector2(x_1stplayer/2-pg_size.x,lbl_y))
+	play_game_button.rect_position = (Vector2(ProjectSettings.get_setting("display/window/size/width") - but_size.x - 20,20))
 	# connect the button mouse pressed signal to a callback function
 	play_game_button.connect("pressed", self, 'play_stop')
 	
@@ -217,11 +365,12 @@ func _ready():
 		lifex += dxlife
 	# set the initial spacing between subsequent notes
 	set_note_offset()
+	clef.show_sel_notes(note_option_sel,region_option_sel)
 #	# begin the game
 #	level1()
 	
-func change_clef():
-	if but_treble.pressed:
+func change_clef(bgrp):
+	if bgrp.sel_text == 'Treble': #but_treble.pressed:
 		clef.set_type('treble')
 	else:
 		clef.set_type('bass')
@@ -242,13 +391,28 @@ func add_option(but_group,but_string,is_sel):
 func play_stop():
 	# called when user selects the play / stop button
 	# set the playing variable and change the label name
+	lbl_instructions.visible = false
+	clef.clear_settings_notes()
 	if playing:
 		end_game()
 	else:
 		playing = true
 		pg_label.text = 'Stop\nGame'
+		# hide the settings
+		show_hide_settings()
 		level1()
 	
+# these are in show_hide_settings
+#func hide_settings():
+#	$SettingsPanel.visible = false
+#	# make the arrow point left
+#	$ExpandCollapse.texture = arrow_rt
+#
+#func show_settings():
+#	$SettingsPanel.visible = true
+#	# make the arrow point left
+#	$ExpandCollapse.texture = arrow_lt
+		
 func clear_results():
 	# hide % labels
 	lbl0.visible = false
@@ -276,11 +440,12 @@ func clear_results():
 		num_on_first_try.append(0)
 	
 func add_label(txt,pos,sz,clr = Color(1,1,1),par=self):
-	var dynamic_font = DynamicFont.new()
-	dynamic_font.font_data = load("res://Fonts/Roboto-Medium.ttf")
+	
 	var label0 = Label.new()
 	label0.text = txt
-	label0.set("custom_fonts/font",dynamic_font)
+	var df = DynamicFont.new()
+	df.font_data = load('res://Fonts/Roboto-Medium.ttf')
+	label0.set("custom_fonts/font",df)
 	label0.set("custom_colors/font_color",clr)
 	label0.get("custom_fonts/font").set_size(sz)
 	label0.rect_position.x = pos.x
@@ -317,7 +482,7 @@ func level1():
 	#	var min_speed = 2
 	#	var max_speed = 10
 		
-		var x = 0
+#		var x = 0
 		sel_note_idx = -1 # increment this to keep track of which note is selected
 		# add note and set it as the selected note (the one for the user to match the player to)
 		add_note()
@@ -338,11 +503,13 @@ func note_reached_end(note_handle):
 			sel_next_note()
 	
 func lose_life():
-	var life_lost = lives_remaining.pop_front()
-	life_lost.unhighlight()
-	life_lost.modulate = Color(1,1,1,0.5)
-	if lives_remaining.size() == 0:
-		end_game()
+	if playing:
+		var life_lost = lives_remaining.pop_front()
+		if life_lost != null:
+			life_lost.unhighlight()
+			life_lost.modulate = Color(1,1,1,0.5)
+		if lives_remaining.size() == 0:
+			end_game()
 		
 func end_game():
 	# set playing to false and change the button to say "Play Game"
@@ -365,7 +532,7 @@ func end_game():
 	# TODO: move this into a get function within Clef.gd
 	var na
 	var note_x
-	var clef_width = clef.get_width()
+#	var clef_width = clef.get_width()
 	if clef.clef_type == 'clef_treble':
 		na = clef.notes_treble
 	else:
@@ -386,30 +553,35 @@ func end_game():
 			var perc_first_try = float(num_on_first_try[ntid]) / float(num_of_times[ntid])
 #			print('% first try: ', perc_first_try)
 			note_x = float(num_on_first_try[ntid]) / float(num_of_times[ntid]) * clef_x_range + x0 
-			note_inst = clef.add_note(ntid,note_x)
+			note_inst = clef.add_note(ntid,note_x)#(clef.noteidcs[ntid],note_x)
 			note_inst.highlight()
 			note_inst.disable_collision() # make sure that overlapping notes don't bump each other out of position
 			result_notes.append(note_inst)
 	
 func add_note():
-	# randomly display a note, moving across the screen
-	var noteidx = randi()%clef.nnotes-1
-	var note_inst = clef.add_note(noteidx,note_starting_x) # pass in the x location of the note
-	notes_array.append(note_inst)
-	if notes_array.size() > 1: #!= sel_note_idx: # this note is not the one the user is identifying
-		# gray out the note
-		note_inst.modulate = Color(0,0,0,.5)
-	
-#		note_inst.visible = true
-	note_inst.idx = noteidx # use this idx to keep track of counts for correct/incorrect selections
-	note_inst.velocity = Vector2(-notes_velocity,0) # move to the right (increase speed as game goes on?)
+	if playing:
+		# randomly display a note, moving across the screen
+#		var noteidcs = clef.get_sel_note_idcs()
+#		print('noteidcs  = ', noteidcs)
+#		var nnotes = noteidcs.size()
+#		print('# notes = ', nnotes)
+		var noteidx = randi()%clef.nnotes-1
+		var note_inst = clef.add_note(clef.noteidcs[noteidx],note_starting_x) # pass in the x location of the note
+		notes_array.append(note_inst)
+		if notes_array.size() > 1: #!= sel_note_idx: # this note is not the one the user is identifying
+			# gray out the note
+			note_inst.modulate = Color(0,0,0,.5)
+		
+	#		note_inst.visible = true
+		note_inst.idx = clef.noteidcs[noteidx] #noteidx # use this idx to keep track of counts for correct/incorrect selections
+		note_inst.velocity = Vector2(-notes_velocity,0) # move to the right (increase speed as game goes on?)
 	
 	
 func sel_next_note():
 	# reset first_try and corr_sel
 	first_try = true # the user can get this note right on the first try
 	correct_sel_made = false # the user hasn't yet made the correct selection
-	num_pts = 12
+	num_pts = 12 # reset number of points for getting it right on first try - will subtract for each miss
 	# reset all the players
 	reset_players()
 	
@@ -548,3 +720,81 @@ func _physics_process(delta):
 
 func _input(event):
 	pass
+
+func change_notes(grp):
+	# change the icon
+	print ('hi')
+#	var seltext
+	if grp == note_bg:
+		note_option_sel = grp.sel_text
+	elif grp == region_bg:
+		region_option_sel = grp.sel_text
+#	for b in grp.get_buttons():
+#		if b.pressed == true:
+#			print('true')
+##			seltext = b.text
+#			if grp == note_bg:
+#				note_option_sel = grp.sel_text
+#			elif grp == region_bg:
+#				region_option_sel = grp.sel_text
+##				draw ( RID canvas_item, Vector2 pos, Color modulate=Color(1,1,1,1), bool transpose=false )
+#
+##			selected_texture.draw(b.icon, Vector2(0,0), Color(1,0,1,1), false )
+##			b.icon = selected_texture
+##			b.icon.color = Color(0,1,0)
+#			# try setting a color on the texture
+##			for c in b.get_children():
+##				print('type = ', c.typeof())
+##			b.icon.modulate = Color(0,1,0)
+#		else:
+#			print('false')
+##			b.Selected.visible
+#			b.icon = unsel_texture
+	clef.show_sel_notes(note_option_sel,region_option_sel)
+	
+	
+	
+func add_button(butgrp,txt,sz):
+	var new_code = true
+	var but
+	var btnscene
+	if new_code:
+		btnscene = Btn.instance()
+		btnscene.init('Test',50,true)
+		but = btnscene.get_button()
+#		but.Button.connect("pressed",self,'change_notes',[butgrp])
+#		but.Button.group = butgrp
+	else:
+		but = Button.new() #add_option(note_bg,'Low',true)
+		but.text = txt
+		but.flat = true
+		var df = DynamicFont.new()
+		df.font_data = load('res://Fonts/Roboto-Medium.ttf')
+		but.set("custom_fonts/font",df)
+	#	but.set("custom_colors/font_color",clr)
+		but.get("custom_fonts/font").set_size(sz)
+	#	dynamic_font.size = 50
+	#	var but_scale = 0.5
+	#	but_high.font = font #get_font("string_name", "")
+	#	but.add_font_override("font", df) #dynamic_font)
+		
+		var exp_icons = false
+		but.expand_icon = exp_icons #false #true
+		but.align = HALIGN_LEFT
+		but.icon = unsel_texture
+		but.toggle_mode = true
+	#	but_high.pressed = false
+	but.connect("pressed",self,'change_notes',[butgrp])
+	but.group = butgrp
+	if new_code:
+		return but #btnscene
+	else:
+		return but
+	
+func show_hide_settings():
+	if $SettingsPanel.visible == true: #settings_panel.visible == true:
+		$SettingsPanel.visible = false #settings_panel.visible = false
+		$ExpandCollapse.texture_normal = arrow_rt
+	else:
+		$SettingsPanel.visible = true #settings_panel.visible = true
+		$ExpandCollapse.texture_normal = arrow_lt

@@ -35,6 +35,10 @@ func set_scale_factor(sf):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	pass
+
+func init(numoctaves):
+	noctaves = numoctaves
 #	wkeys.resize(nwkeys)
 	# find index of middle octave
 	var mid_oct = int(noctaves/2) # truncates, so if only 1 octave, gives first index (0)

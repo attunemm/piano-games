@@ -7,14 +7,24 @@ signal object_entered_clef(body)
 # var b = "text"
 export (PackedScene) var Note
 var nnotes = 0 # number of notes 
+var noteidcs
 var clef_type = 'treble' # can be 'treble' or 'bass'
 var notes = Array()
+#var settings_notes = Array() # array holding the notes displayed to show the user the settings
 var note_pos_array = Array() # array to hold each note with its y position [ypos, note] - for sorting
 var tot_time = 0
 var note_idx = 0
 # notes from top down on staves
 var notes_treble = ['D','C','B','A','G','F','E','D','C','B','A','G','F','E','D','C','B','A','G']
 var notes_bass = ['F','E','D','C','B','A','G','F','E','D','C','B','A','G','F','E','D','C','B']
+var sel_array = Array() # holds T/F for which notes to pick from
+# keep track of which notes are on a line, top to bottom
+var on_line = [false,true,false,true,false,true,false,true,false,true,false,true,false,true,false,true,false,true,false]
+var on_space
+# keep track of which notes are on the staff
+var on_staff = [false,false,false,false,false,true,true,true,true,true,true,true,true,true,false,false,false,false,false]
+var on_leger
+var all_notes_bool = [true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]
 # ledger lines are listed from top to bottom with 2 above, 1 above, mid, 1 below, 2 below for each note
 var ledger_lines = [[false,false,false,false,true,false,true],\
 [false,false,false,true,false,true,false],\
@@ -37,6 +47,7 @@ var ledger_lines = [[false,false,false,false,true,false,true],\
 [true,false,true,false,false,false,false]]
 #[true,false,true,false,false,false],\
 var staff_points = Array() # array to hold position and handle to staff points - for locating notes
+var settings_notes = Array() # array to notes displayed to show the user their selected settings
 
 func set_type(newtype):
 	if newtype == 'bass':
@@ -86,6 +97,8 @@ func show_clef():
 	$Staff/LegerLineBelow2.visible = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	on_leger = inverse_array(on_staff)
+	on_space = inverse_array(on_line)
 	var n
 	var y = 0
 	var dy = 12.5
@@ -126,7 +139,7 @@ func _ready():
 #			n.visible = false
 #	note_pos_array.sort_custom(self,'sort_ascending')
 	staff_points.sort_custom(self,'sort_ascending')
-	print(staff_points)
+#	print(staff_points)
 #	print(note_pos_array)
 	# set the note value for each note based on the clef
 
@@ -228,3 +241,84 @@ func hide_perc_lines():
 	$Staff/Perc50_VertLine.visible = false
 	$Staff/Perc100_VertLine.visible = false
 		
+func set_trebleclef_xscale(sc):
+	$Staff/TrebleClef.scale.x = sc # for use when scaling the whole clef in the x-dir
+	
+func get_polygon():
+	return $Staff.polygon
+	
+func set_polygon(pts):
+	$Staff.polygon = pts
+
+func show_sel_notes(notes_sel,region_sel):
+#	settings_notes.clear()
+	clear_settings_notes()
+#	sel_array
+	
+	# Region
+	if region_sel == 'Staff':
+		sel_array = on_staff
+	elif region_sel == 'Leger':
+		sel_array = on_leger
+#		sel_array = !on_staff
+	else: # 'All'
+		sel_array = all_notes_bool
+			
+	# Notes
+	if notes_sel == 'Lines':
+		sel_array = merge_arrays(on_line, sel_array)
+	elif notes_sel == 'Spaces':
+		sel_array = merge_arrays(on_space, sel_array)
+#	else: # 'All'
+#		keep the current selection
+	
+	print('sel array = ', sel_array)
+	var nt
+	var xline = 400
+	var xspace = xline + 50
+	var i = 0
+	for n in sel_array:
+		if n:
+			if on_line[i]:
+				nt = add_note(i,xline)
+			else:
+				nt = add_note(i,xspace)
+			nt.disable_collision()
+			settings_notes.append(nt)
+		i+=1
+		
+	noteidcs = get_sel_note_idcs()
+	print('noteidcs  = ', noteidcs)
+	nnotes = noteidcs.size()
+	print('# notes = ', nnotes)
+
+func merge_arrays(a1,a2):
+	var a3 = Array()
+	var i = 0
+	for ai in a1:
+		a3.append(ai and a2[i])
+		i+=1
+	return a3
+
+func inverse_array(a1):
+	var a2 = Array()
+	var i = 0
+	for ai in a1:
+		a2.append(!ai)
+		i+=1
+	return a2
+	
+func clear_settings_notes():
+	for n in settings_notes:
+		n.queue_free()
+		
+	settings_notes.clear()
+
+func get_sel_note_idcs():
+	var nidcs = Array()
+	var i = 0
+	for n in sel_array:
+		if n:
+			nidcs.append(i)
+		i += 1
+	return nidcs

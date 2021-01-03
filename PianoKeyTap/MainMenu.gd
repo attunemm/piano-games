@@ -29,6 +29,7 @@ func _ready():
 	#octave.connect("keysel", self, "set_sel_key")
 	add_child(octave)
 	
+	# add the staff
 	staff = Staff.instance()
 	staff.set_scale(Vector2(staff_scale_y,staff_scale_y))
 	staff.change_width(staff_wtoh)
@@ -39,11 +40,26 @@ func _ready():
 	pg[1][1] = pg[1][1]-30
 	pg[2][1] = pg[2][1]-30
 	pg[3][1] = 40
-	print(pg)
+#	print(pg)
 	staff.set_polygon(pg)
 	add_child(staff)
+	
+	# connect the buttons to go_to_game function
+	for button in self.get_children(): #get_tree().get_nodes_in_group("my_buttons"):
+		if button.get_class() == "Button":
+			button.connect("pressed", self, "go_to_game", [button])
 
+func go_to_game(button):
+	print(button.name)
+	if button.name == "Level1":
+		get_tree().change_scene("res://Main.tscn")
+	elif button.name == "Level2":
+		get_tree().change_scene("res://Frogger.tscn")
+	elif button.name == "Level3":
+		pass
+#		get_tree().change_scene("res://Main.tscn")
 
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

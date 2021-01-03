@@ -76,6 +76,7 @@ func _ready():
 	# load the octave
 	octave = Keyboard.instance()
 #	octave.set_scale_factor(scale_factor)
+	octave.init(3) # 3 octaves
 	octave.set_scale(Vector2(oct_scale,oct_scale))
 	octave.set_position(Vector2(octave_x_offset,octave_y_offset))
 #	var oct_ext = octave.get_extents()

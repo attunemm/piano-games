@@ -7,14 +7,14 @@
 [ext_resource path="res://Note.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Fonts/Roboto-Medium.ttf" type="DynamicFontData" id=6]
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=1]
 size = 14
 font_data = ExtResource( 6 )
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=2]
 font_data = ExtResource( 6 )
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 50, 150 )
 
 [node name="Clef" type="Area2D"]
@@ -166,6 +166,7 @@ width = 3.0
 default_color = Color( 0, 0, 0, 1 )
 
 [node name="Perc0_VertLine" type="Line2D" parent="Staff"]
+visible = false
 position = Vector2( -10, 0 )
 points = PoolVector2Array( 0, 0, 0, 247.5 )
 width = 2.0
@@ -175,7 +176,7 @@ default_color = Color( 0.470588, 0.470588, 0.470588, 1 )
 visible = false
 margin_right = 40.0
 margin_bottom = 14.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0, 0, 0, 0.996078 )
 text = "0%"
 align = 1
@@ -185,6 +186,7 @@ __meta__ = {
 }
 
 [node name="Perc100_VertLine" type="Line2D" parent="Staff"]
+visible = false
 position = Vector2( -10, 0 )
 points = PoolVector2Array( 0, 0, 0, 247.5 )
 width = 2.0
@@ -194,7 +196,7 @@ default_color = Color( 0.470588, 0.470588, 0.470588, 1 )
 visible = false
 margin_right = 40.0
 margin_bottom = 14.0
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "100%"
 __meta__ = {
@@ -202,6 +204,7 @@ __meta__ = {
 }
 
 [node name="Perc50_VertLine" type="Line2D" parent="Staff"]
+visible = false
 position = Vector2( -10, 0 )
 points = PoolVector2Array( 0, 0, 0, 247.5 )
 width = 2.0
@@ -209,5 +212,5 @@ default_color = Color( 0.470588, 0.470588, 0.470588, 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 50, 125 )
-shape = SubResource( 1 )
+shape = SubResource( 3 )
 [connection signal="body_entered" from="." to="." method="_on_Clef_body_entered"]

@@ -134,35 +134,35 @@ font_data = ExtResource( 1 )
 size = 32
 font_data = ExtResource( 1 )
 
-[sub_resource type="StreamTexture" id=24]
+[sub_resource type="StreamTexture" id=17]
 flags = 4
 load_path = "res://.import/A_no_hat.png-3669523387eee9d6332be96da418e3a9.stex"
 
-[sub_resource type="StreamTexture" id=17]
+[sub_resource type="StreamTexture" id=18]
 flags = 4
 load_path = "res://.import/B_no_hat.png-875d201782c18d9c2c9ba01a5c0e5962.stex"
 
-[sub_resource type="StreamTexture" id=18]
+[sub_resource type="StreamTexture" id=19]
 flags = 4
 load_path = "res://.import/C_no_hat.png-9a8d133be06e4dc792711d298106f12c.stex"
 
-[sub_resource type="StreamTexture" id=19]
+[sub_resource type="StreamTexture" id=20]
 flags = 4
 load_path = "res://.import/D_no_hat.png-3d1a9028acdc17a22f8171456e3f066a.stex"
 
-[sub_resource type="StreamTexture" id=20]
+[sub_resource type="StreamTexture" id=21]
 flags = 4
 load_path = "res://.import/E_no_hat2.png-5ac3de0c559699dc44534de8382848e7.stex"
 
-[sub_resource type="StreamTexture" id=21]
+[sub_resource type="StreamTexture" id=22]
 flags = 4
 load_path = "res://.import/F no hat 2.png-580a6a9635918993511cd7b0bb496195.stex"
 
-[sub_resource type="StreamTexture" id=22]
+[sub_resource type="StreamTexture" id=23]
 flags = 4
 load_path = "res://.import/G_no_hat.png-51d8925ca610c99992719aaaed07ee18.stex"
 
-[sub_resource type="DynamicFont" id=23]
+[sub_resource type="DynamicFont" id=24]
 size = 42
 font_data = ExtResource( 1 )
 
@@ -455,44 +455,44 @@ texture = ExtResource( 4 )
 [node name="Life" type="Sprite" parent="LivesBox"]
 position = Vector2( 943, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 24 )
+texture = SubResource( 17 )
 
 [node name="Life2" type="Sprite" parent="LivesBox"]
 position = Vector2( 1025, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 17 )
+texture = SubResource( 18 )
 
 [node name="Life3" type="Sprite" parent="LivesBox"]
 position = Vector2( 1101, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 18 )
+texture = SubResource( 19 )
 
 [node name="Life4" type="Sprite" parent="LivesBox"]
 position = Vector2( 1170, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 19 )
+texture = SubResource( 20 )
 
 [node name="Life5" type="Sprite" parent="LivesBox"]
 position = Vector2( 1245, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 20 )
+texture = SubResource( 21 )
 
 [node name="Life6" type="Sprite" parent="LivesBox"]
 position = Vector2( 1317, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 21 )
+texture = SubResource( 22 )
 
 [node name="Life7" type="Sprite" parent="LivesBox"]
 position = Vector2( 1390, -5 )
 scale = Vector2( 0.1, 0.1 )
-texture = SubResource( 22 )
+texture = SubResource( 23 )
 
 [node name="InstructionsLabel" type="Label" parent="."]
 margin_left = 40.0
 margin_top = 50.0
 margin_right = 1168.0
 margin_bottom = 153.0
-custom_fonts/font = SubResource( 23 )
+custom_fonts/font = SubResource( 24 )
 text = "Adjust the settings below, then click \"Start\" to begin playing.
 Or, tap the keys to make up your own song."
 __meta__ = {
