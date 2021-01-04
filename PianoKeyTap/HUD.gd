@@ -1,9 +1,7 @@
 extends CanvasLayer
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+# Declare member variables here. 
 var life_size_y = 120 #pixels
 
 # Called when the node enters the scene tree for the first time.
@@ -25,11 +23,6 @@ func adjust_lives_sizes(life_sprite):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
-func hide_settings():
-	$KeyOptionsBox.hide()
-	
-func show_settings():
-	$KeyOptionsBox.show()
 	
 func display_instructions(instructions):
 	$InstructionsLabel.text = instructions
@@ -69,35 +62,7 @@ func reset_lives():
 	$LivesBox/Life5.modulate = Color(1,1,1,1)
 	$LivesBox/Life6.modulate = Color(1,1,1,1)
 	$LivesBox/Life7.modulate = Color(1,1,1,1)
-		
-func get_mode_selected():
-	if $KeyOptionsBox/VBoxContainer/HBoxNotes/CBwhite.pressed:
-		return 'white'
-	elif $KeyOptionsBox/VBoxContainer/HBoxNotes/CBsharps.pressed:
-		return 'sharps'
-	elif $KeyOptionsBox/VBoxContainer/HBoxNotes/CBflats.pressed:
-		return 'flats'
-	elif $KeyOptionsBox/VBoxContainer/HBoxNotes/CBall.pressed:
-		return 'all'
-		
-func set_mode_selected(mode):
-	if mode == 'white':
-		$KeyOptionsBox/VBoxContainer/HBoxNotes/CBwhite.pressed = true
-	elif mode == 'sharps':
-		$KeyOptionsBox/VBoxContainer/HBoxNotes/CBsharps.pressed = true
-	elif mode == 'flats':
-		$KeyOptionsBox/VBoxContainer/HBoxNotes/CBflats.pressed = true
-	elif mode == 'all':
-		$KeyOptionsBox/VBoxContainer/HBoxNotes/CBall.pressed = true
-#	elif mode == 'white':
-#		$KeyOptionsBox/VBoxContainer/HBoxNotes/CBwhite.pressed
-		
-func get_color_mode_selected():
-	if $KeyOptionsBox/VBoxContainer/HBoxKeys/CBrainbow.pressed:
-		return 7
-	elif $KeyOptionsBox/VBoxContainer/HBoxKeys/CBbinary.pressed:
-		return 2
-		
+
 func hide():
 	$ScoreBox.hide()
 
@@ -112,6 +77,3 @@ func start_stop_switch():
 		$ScoreBox/VBoxContainer/StartButton.text == 'Stop'
 	elif $ScoreBox/VBoxContainer/StartButton.text == 'Stop':
 		$ScoreBox/VBoxContainer/StartButton.text == 'Start'
-
-func get_move_octave_setting():
-	return $KeyOptionsBox/VBoxContainer/HBoxKeys/cbMoveKeys.pressed

@@ -17,7 +17,7 @@ _global_script_class_icons={
 
 config/name="Piano Tap Dance"
 config/description="Select the correct key before the player falls out of view."
-run/main_scene="res://Main.tscn"
+run/main_scene="res://MainMenu.tscn"
 config/icon="res://icon.png"
 
 [display]

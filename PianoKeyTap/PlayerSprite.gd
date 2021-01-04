@@ -11,6 +11,8 @@ var height = 8 # controls the height of the sprite TODO make this relative?
 var state = 'unset' # used in logic to control the motion of the player
 var scale_factor = 2 # to account for larger window in pixels than original design
 var notename = ''
+# if 0.5, will "collide" before any part of the sprites connect; make smaller
+var coll_factor = 0.5 # 0.5 covers the entire sprite area; increase to cover more; decrease to cover less 0.33
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -200,20 +202,31 @@ func switch_texture(note):
 	$Sprite.set_scale(Vector2(imscale,imscale))
 	
 	# set the collisionshape to match the image size
-#	print('sprite size: ', sprite_size)
-	var transform = get_node("CollisionShape2D").get_shape()
-	var oldScale = transform.get_extents()
-#	print('orig extents: ', oldScale)
-#	print('scale = ', imscale)
-	# if 0.5, will "collide" before any part of the sprites connect; make smaller
-	var coll_factor = 0.33
-	transform.set_extents(Vector2(imscale*sprite_size.x*coll_factor,imscale*sprite_size.y*coll_factor))
-#	print('collision shape y = ', imscale*sprite_size.y/2)
+	set_coll_shape()
+##	print('sprite size: ', sprite_size)
+#	var transform = get_node("CollisionShape2D").get_shape()
+#	var oldScale = transform.get_extents()
+##	print('orig extents: ', oldScale)
+##	print('scale = ', imscale)
+#	# if 0.5, will "collide" before any part of the sprites connect; make smaller
+##	coll_factor = 0.33
+#	transform.set_extents(Vector2(imscale*sprite_size.x*coll_factor,imscale*sprite_size.y*coll_factor))
+##	print('collision shape y = ', imscale*sprite_size.y/2)
 	
 	# move the label to above the image
 	var label_size = $Label.get_size()
 	$Label.set_position(Vector2(-label_size.x/2,-imscale*sprite_size.y+label_size.y/2))
 #	$Label.set_position(Vector2(-label_size.x/2,-sprite_size.y/2-label_size.y/2))
+	
+func set_coll_factor(cf):
+	coll_factor = cf
+	set_coll_shape()
+	
+func set_coll_shape():
+	var sprite_size = get_sprite_size()
+	var imscale = height / sprite_size.y
+	var transform = get_node("CollisionShape2D").get_shape()
+	transform.set_extents(Vector2(imscale*sprite_size.x*coll_factor,imscale*sprite_size.y*coll_factor))
 	
 func show_label(txt):
 	$Label.set_text(txt)

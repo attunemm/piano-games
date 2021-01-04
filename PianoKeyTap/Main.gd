@@ -10,7 +10,7 @@ const SHARP = 1 # only practice sharp notes
 const FLAT = 2 # only practice flat notes
 const ALL = 3 # practice a random mix of natural, sharp and flat notes
 const USER_SELECT = 4 # let the user toggle between natural, sharp, flat and all as desired
-var mode = ALL #USER_SELECT #ALL #FLAT #SHARP #NATURAL # change this to set what type of notes are practiced
+var mode = USER_SELECT #ALL #FLAT #SHARP #NATURAL # change this to set what type of notes are practiced
 var octave
 var player
 var defender 
@@ -28,44 +28,50 @@ var white_notes = ['A','B','C','D','E','F','G']
 var sharp_notes = ['A_sharp','B_sharp','C_sharp','D_sharp','E_sharp','F_sharp','G_sharp']
 var flat_notes = ['A_flat','B_flat','C_flat','D_flat','E_flat','F_flat','G_flat']
 var all_notes = white_notes + sharp_notes + flat_notes
+var notes # keep track of the notes currently in use
 var is_running = false
 var speed_up_by = 5 * scale_factor # controls how many pixels to increase the player fall speed by when they select the right key
-var color_mode_sel
+var color_mode_sel = 7 # default to seven colors
 var nlives_remaining # track how many lives are left
 var nlives_initial = 7 # initial number of lives
 var off_screen_pixels = 500 # number of pixels to ensure a play is offscreen - could make this a calculation
+var move_octave = false
 #var can_select_key = true # controls whether the user can select a key (one key at a time)
 #var sel_key = ''
 
 export (PackedScene) var Keyboard # link to an Octave scene reference
 export (PackedScene) var Players # link to a PlayerSprite scene reference
+export (PackedScene) var SettingsControl # link to a Settings scene reference
+export (PackedScene) var OptionsGrp # link to a ButtonWithIcon scene reference
+var set_panel # a SettingsControl instance
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	set_physics_process(true)
 	# based on the mode, set the radiobuttons and hide options
-	$HUD.hide_settings()
+#	$HUD.hide_settings()
 	var instructions = 'Press Start to begin playing Piano Tap Dance %s. \nEarn points by selecting the correct key before the player falls off the screen.'
 	var inset
+#	TODO: replace set_mode_selected with updated code with setting panel
 	if mode == NATURAL:
-		$HUD.set_mode_selected('white')
+#		$HUD.set_mode_selected('white')
 		inset = '- Natural Notes'
 #		notes = white_notes
 	elif mode == SHARP:
-		$HUD.set_mode_selected('sharps')
+#		$HUD.set_mode_selected('sharps')
 		inset = '- Sharp Notes'
 #		notes = sharp_notes
 	elif mode == FLAT:
-		$HUD.set_mode_selected('flats')
+#		$HUD.set_mode_selected('flats')
 		inset = '- Flat Notes'
 #		notes = flat_notes
 	elif mode == ALL:
-		$HUD.set_mode_selected('all')
+#		$HUD.set_mode_selected('all')
 		inset = '- All Notes'
 #		notes = all_notes
 	elif mode == USER_SELECT:
 		inset = '(adjust settings below)'
-		$HUD.show_settings()
+#		$HUD.show_settings()
 	$HUD.display_instructions(instructions % inset)
 	
 	# connect to the signal emitted by the start button
@@ -73,6 +79,28 @@ func _ready():
 	$HUD/ScoreBox/VBoxContainer/StartButton.connect('button_up', self, 'start_game')
 #	$HUD/KeyOptionsBox/HBoxContainer/StartButton.connect('button_up', self, 'start_game')
 
+	# load the settings
+	set_panel = SettingsControl.instance()
+	# create the settings groups
+	var og1 = OptionsGrp.instance()
+	og1.init('Notes:',['Natural','Sharp','Flat','All'],50,'All')
+	var og2 = OptionsGrp.instance()
+	og2.init('Colors:',['7','2'],50,'7')
+	var og3 = OptionsGrp.instance()
+	og3.init('Keyboard:',['Fixed','Moving'],50,'Fixed')
+	set_panel.add_setting(og1)
+	set_panel.add_setting(og2)
+	set_panel.add_setting(og3)
+	add_child(set_panel)
+	
+	# listen for changed signal
+	og1.connect("selection_changed", self, "change_notes",[og1])
+	og2.connect("selection_changed", self, "change_color",[og2])
+	og3.connect("selection_changed", self, "change_keyboard",[og3])
+	change_notes(og1)
+	change_color(og2)
+	change_keyboard(og3)
+	
 	# load the octave
 	octave = Keyboard.instance()
 #	octave.set_scale_factor(scale_factor)
@@ -89,6 +117,10 @@ func _ready():
 	# determine the size of the octave
 	var oct_pixels = octave.get_pixels()
 #	print('oct_pixels = ', oct_pixels)
+
+	#locate the settings panel based on the size of the octave
+	
+	set_panel.position.y = screenHeight - set_panel.get_height() #oct_pixels.y
 	
 	# set the size of the players to be 1/4 as tall as the white key
 	var player_height = oct_pixels[1]/2 * oct_scale * scale_factor
@@ -96,6 +128,8 @@ func _ready():
 	# create the player that tells which note to tap
 	player = Players.instance()
 	player.set_height(player_height)
+	var collision_scale_factor = 0.33 # needs to be <0.5 so players don't collide before they touch
+	player.set_coll_factor(collision_scale_factor) 
 	# place off screen
 	player.position.x = 0
 	player.position.y = -off_screen_pixels
@@ -103,6 +137,7 @@ func _ready():
 	# create the defender to defend the key if the wrong note is tapped
 	defender = Players.instance()
 	defender.set_height(player_height)
+	defender.set_coll_factor(collision_scale_factor)
 	# place off screen
 	defender.position.x = 0
 	defender.position.y = -off_screen_pixels
@@ -117,10 +152,12 @@ func _ready():
 
 func stop_game():
 	is_running = false
+	player.visible = false
+	defender.visible = false
 	# stop game and display the options
-	if mode == USER_SELECT:
-		$HUD.show_settings()
-	# change text to Start
+#	if mode == USER_SELECT:
+#		$HUD.show_settings()
+#	# change text to Start
 	$HUD/ScoreBox/VBoxContainer/StartButton.set_text('Start')
 	# hide the player and defender
 	player.state = 'unset'
@@ -142,6 +179,10 @@ func start_game():
 		octave.highlight_when_play(true)
 #		
 	else:
+		player.visible = true
+		defender.visible = true
+		# hide the settings panel
+		hide_settings()
 		octave.highlight_when_play(false)
 		# hide the instructions
 		$HUD/InstructionsLabel.visible = false
@@ -149,7 +190,7 @@ func start_game():
 		$HUD.reset_lives()
 		is_running = true
 		# hide the options box
-		$HUD/KeyOptionsBox.visible = false
+#		$HUD/KeyOptionsBox.visible = false
 		# change text to Stop
 		$HUD/ScoreBox/VBoxContainer/StartButton.set_text('Stop')
 		# reset the score and player velocity
@@ -161,8 +202,15 @@ func start_game():
 #		velocity = Vector2(0,player.fall_speed)
 		# call the function to start the game
 		level1()
+		
+func hide_settings():
+	set_panel.hide_settings()
 
+func show_settings():
+	set_panel.show_settings()
+	
 func level1():
+
 #	# if there is already a key selected, don't let them select another
 #	if !octave.can_select_key:
 #		print('could not select key')
@@ -191,10 +239,10 @@ func level1():
 	randomize() # reseed random number generator
 	var min_speed = 2
 	var max_speed = 10
-	var notes = ['A','B','C','D','E','F','G']
+#	var notes = ['A','B','C','D','E','F','G']
 	
 	# move the octave if this option is selected
-	var move_octave = $HUD.get_move_octave_setting()
+#	var move_octave = $HUD.get_move_octave_setting()
 	if move_octave:
 		var rng = RandomNumberGenerator.new()
 		rng.randomize()
@@ -213,17 +261,17 @@ func level1():
 #			print(cur_offset)
 	
 	yield(get_tree().create_timer(0.01), "timeout")	
-	var mode_sel = $HUD.get_mode_selected()
-	if mode_sel == 'white':
-		notes = white_notes
-	elif mode_sel == 'sharps':
-		notes = sharp_notes
-	elif mode_sel == 'flats':
-		notes = flat_notes
-	elif mode_sel == 'all':
-		notes = all_notes
+#	var mode_sel = $HUD.get_mode_selected()
+#	if mode_sel == 'white':
+#		notes = white_notes
+#	elif mode_sel == 'sharps':
+#		notes = sharp_notes
+#	elif mode_sel == 'flats':
+#		notes = flat_notes
+#	elif mode_sel == 'all':
+#		notes = all_notes
 	
-	color_mode_sel = $HUD.get_color_mode_selected()
+#	color_mode_sel = $HUD.get_color_mode_selected()
 	
 	var numnotes = notes.size()
 #	print('number of notes: ', numnotes)
@@ -296,6 +344,23 @@ func lose_life():
 #	defender.state = 'unset'
 #	level1()
 	
+func change_notes(butgrp):
+	var mode_sel = butgrp.sel_text #get_mode_selected()
+	if mode_sel == 'Natural':
+		notes = white_notes
+	elif mode_sel == 'Sharp':
+		notes = sharp_notes
+	elif mode_sel == 'Flat':
+		notes = flat_notes
+	elif mode_sel == 'All':
+		notes = all_notes
+	
+#	color_mode_sel = $HUD.get_color_mode_selected()
+#
+#	var numnotes = notes.size()
+#	print('number of notes: ', numnotes)
+	
+
 #func _input(event):
 func compare_key_to_player():
 #	print('connection worked')
@@ -439,4 +504,15 @@ func highlight_correct_keys():
 				wk.highlight(player.notename)
 			else:
 				wk.highlight('correct')
-
+				
+func change_keyboard(butgrp):
+	if butgrp.sel_text == 'Moving':
+		move_octave = true
+	else:
+		move_octave = false
+	
+func change_color(butgrp):
+	if butgrp.sel_text == '7':
+		color_mode_sel = 7
+	else:
+		color_mode_sel = 2

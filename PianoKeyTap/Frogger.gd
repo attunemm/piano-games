@@ -20,6 +20,7 @@ export (PackedScene) var Staff
 export (PackedScene) var Player # PlayerSprite.tscn
 export (PackedScene) var Note # Note.tscn
 export (PackedScene) var Btn # ButtonWithIcon.tscn
+export (PackedScene) var SettingsControl
 var notes = ['C','D','E','F','G','A','B']
 var numnotes = notes.size()
 var sel_player # store the handle to the selected player sprite
@@ -64,6 +65,7 @@ var lbl_instructions
 var dynamic_font = DynamicFont.new()
 var arrow_rt
 var arrow_lt
+var set_panel # instance of the settings panel
 #print(numnotes)
 #var selected_texture=load("res://Icons/FilledSquareBlue.svg")
 #var unsel_texture = load('res://Icons/OpenSquareBlue.svg')
@@ -78,9 +80,9 @@ var region_option_sel # string to track which option is selected
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# connect the settings expand/collapse button to code
-	$ExpandCollapse.connect("pressed", self, 'show_hide_settings')
-	arrow_rt = load('res://Icons/RightBlack.svg')
-	arrow_lt = load('res://Icons/LeftBlack.svg')
+#	$ExpandCollapse.connect("pressed", self, 'show_hide_settings')
+#	arrow_rt = load('res://Icons/RightBlack.svg')
+#	arrow_lt = load('res://Icons/LeftBlack.svg')
 	dynamic_font.font_data = load("res://Fonts/Roboto-Medium.ttf")
 	# load the clef
 	clef = Staff.instance()
@@ -150,65 +152,23 @@ func _ready():
 		player.velocity = Vector2(0,0)
 		dx += player_spacing_x
 #		dx += sprite_size.x * player_scale + 10
+
 	# add user controlled options
 	clef_bg = Btn.instance() #ButtonGroup.new()
 	# treble or bass clef
-	clef_bg.init('Clef:',['Bass','Treble'],fontsz,true) #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
-	clef_bg.sel_changed()
-#	but_treble = add_button(clef_bg,'Treble',fontsz) #add_option(clef_bg,'Treble',true)
-#	but_bass = add_button(clef_bg,'Bass',fontsz) #add_option(clef_bg,'Bass',false)
-#	var new_code = false
-#	if new_code:
-#		var bt = but_treble.get_button()
-#		bt.pressed = true
-#		bt.connect("pressed",self,'change_clef')
-#		var bb = but_bass.get_button()
-#		bb.connect("pressed",self,'change_clef')
-#	else:
-#		but_treble.pressed = true
-#		but_treble.connect("pressed",self,'change_clef')
-#		but_bass.connect("pressed",self,'change_clef')
-#	change_notes(clef_bg)
-#	but_treble.set_expand_icon(true)
-#	but_bass.set_expand_icon(true)
+	clef_bg.init('Clef:',['Treble','Bass'],fontsz,'Treble') #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
 	
 	region_bg = Btn.instance() #ButtonGroup.new()
-	region_bg.init('Region:',['Staff','Leger','All'],fontsz,true) #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
-	region_bg.sel_changed()
-#	region_bg = ButtonGroup.new()
-##	but_high = Button.new() #add_option(note_bg,'High',true)
-#	but_staff = add_button(region_bg,'Staff',fontsz)
-#	but_leger = add_button(region_bg,'Leger',fontsz)
-##	but_high = add_button(region_bg,'High')
-##	but_low = add_button(region_bg,'Low')
-#	but_all = add_button(region_bg,'All',fontsz)
-#	if new_code:
-#		var ba = but_all.get_button()
-#		ba.pressed = true
-#	else:
-#		but_all.pressed = true
-#	change_notes(region_bg) #but_low.icon = unsel_texture #selected_texture
-
+	region_bg.init('Region:',['Staff','Leger','All'],fontsz,'All') #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
+	
 	note_bg = Btn.instance() #ButtonGroup.new()
-	note_bg.init('Notes:',['Lines','Spaces','All'],fontsz,true) #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
-	note_bg.sel_changed()
+	note_bg.init('Notes:',['Lines','Spaces','All'],fontsz,'All') #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
 	
 	# listen for changed signal
 	clef_bg.connect("selection_changed", self, "change_clef",[clef_bg])
 	region_bg.connect("selection_changed", self, "change_notes",[region_bg])
 	note_bg.connect("selection_changed", self, "change_notes",[note_bg])
-#	note_bg = ButtonGroup.new()
-##	but_high = Button.new() #add_option(note_bg,'High',true)
-#	but_lines = add_button(note_bg,'Lines',fontsz)
-#	but_spaces = add_button(note_bg,'Spaces',fontsz)
-#	but_allnotes = add_button(note_bg,'All',fontsz)
-#	if new_code:
-#		var bn = but_allnotes.get_button()
-#		bn.pressed = true
-#	else:
-#		but_allnotes.pressed = true
-#	change_notes(note_bg) #but_low.icon = unsel_texture #selected_texture
-
+	
 	# add the buttons to hbox and vbox containers
 	var clefbox = VBoxContainer.new() #HBoxContainer.new()
 	var regionbox = VBoxContainer.new() #HBoxContainer.new()
@@ -260,7 +220,10 @@ func _ready():
 #	note_bg.position.x = xn + sz.x + delta
 	
 #	settings_panel = Polygon2D.new() #PanelContainer.new()
-	var pg_pts = $SettingsPanel.polygon
+	set_panel = SettingsControl.instance()
+	# connect to callback
+#	set_panel.connect("show_hide", self, 'show_hide_settings')
+	var pg_pts = set_panel.get_polygon_pts() #$SettingsPanel.polygon
 #	var xpanel = clef_x_offset
 #	var y
 #	for i in range(4):
@@ -270,43 +233,46 @@ func _ready():
 	var sp_x1 = clef_x_offset + clef.get_width()*clef_scale # TODO: offset by clef width
 	var sp_y0 = clef_y_offset + clef.get_height()*clef_scale # TODO: offset by clef height
 	var sp_y1 = sp_y0 + 600
-	pg_pts[0][0] = sp_x0
-	pg_pts[0][1] = sp_y0
+	set_panel.position.y = sp_y0
+	if 0:
+		pg_pts[0][0] = sp_x0
+		pg_pts[0][1] = sp_y0
 	
-	pg_pts[1][0] = sp_x0
-	pg_pts[1][1] = sp_y1
+		pg_pts[1][0] = sp_x0
+		pg_pts[1][1] = sp_y1
 	
-	pg_pts[2][0] = sp_x1
-	pg_pts[2][1] = sp_y1
+		pg_pts[2][0] = sp_x1
+		pg_pts[2][1] = sp_y1
 	
-	pg_pts[3][0] = sp_x1
-	pg_pts[3][1] = sp_y0
-	print('pg_pts = ', pg_pts)
-	$SettingsPanel.polygon = pg_pts
+		pg_pts[3][0] = sp_x1
+		pg_pts[3][1] = sp_y0
+		print('pg_pts = ', pg_pts)
+		set_panel.set_polygon_pts(pg_pts) #$SettingsPanel.polygon = pg_pts
 #	$CanvasLayer.add_child(settings_panel)
 #	$SettingsPanel.add_child(settingsbox)
 #	settings_panel.add_child(settingsbox)
 
-	$SettingsPanel.add_child(clef_bg)
-	var sz = clef_bg.get_scene_size() #clef_bg.get_vbox_size()
-	var delta = 50
-	var xdelta = 100
-	var xn = sp_x0 + xdelta
-	clef_bg.position.x = xn
-	clef_bg.position.y = sp_y0 + delta
-#	settingsbox.add_spacer(true)
-#	settingsbox.add_spacer(true)
-	$SettingsPanel.add_child(region_bg)
+	set_panel.add_setting(clef_bg) #$SettingsPanel.add_child(clef_bg)
+#	var sz = clef_bg.get_scene_size() #clef_bg.get_vbox_size()
+#	var delta = 50
+#	var xdelta = 100
+#	var xn = sp_x0 + xdelta
+#	clef_bg.position.x = xn
+#	clef_bg.position.y = delta #sp_y0 + delta
+##	settingsbox.add_spacer(true)
+##	settingsbox.add_spacer(true)
+	set_panel.add_setting(region_bg) #$SettingsPanel.add_child(region_bg)
+#	xn = sz.x + xn + xdelta
+#	region_bg.position.x = xn
+#	region_bg.position.y = delta #sp_y0 + delta
+#	sz = region_bg.get_scene_size() #get_vbox_size()
+##	$SettingsPanel.add_spacer(true)
+	set_panel.add_setting(note_bg) #$SettingsPanel.add_child(note_bg)
+#	note_bg.position.x = xn + sz.x + xdelta
+#	note_bg.position.y = delta #sp_y0 + delta
 	
-	xn = sz.x + xn + xdelta
-	region_bg.position.x = xn
-	region_bg.position.y = sp_y0 + delta
-	sz = region_bg.get_scene_size() #get_vbox_size()
-#	$SettingsPanel.add_spacer(true)
-	$SettingsPanel.add_child(note_bg)
-	note_bg.position.x = xn + sz.x + xdelta
-	note_bg.position.y = sp_y0 + delta
-	
+	add_child(set_panel)
+
 	# get the vbox size, to help position the panel
 #	var vbox_size = settingsbox.rect_size
 #	settings_panel.rect_position = Vector2(clef_x_offset,clef_y_offset+clef.get_height()*clef_scale)
@@ -792,9 +758,10 @@ func add_button(butgrp,txt,sz):
 		return but
 	
 func show_hide_settings():
-	if $SettingsPanel.visible == true: #settings_panel.visible == true:
-		$SettingsPanel.visible = false #settings_panel.visible = false
-		$ExpandCollapse.texture_normal = arrow_rt
-	else:
-		$SettingsPanel.visible = true #settings_panel.visible = true
-		$ExpandCollapse.texture_normal = arrow_lt
+	set_panel.show_hide_settings()
+#	if $SettingsPanel.visible == true: #settings_panel.visible == true:
+#		$SettingsPanel.visible = false #settings_panel.visible = false
+#		$ExpandCollapse.texture_normal = arrow_rt
+#	else:
+#		$SettingsPanel.visible = true #settings_panel.visible = true
+#		$ExpandCollapse.texture_normal = arrow_lt
