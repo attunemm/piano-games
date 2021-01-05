@@ -21,6 +21,7 @@ export (PackedScene) var Player # PlayerSprite.tscn
 export (PackedScene) var Note # Note.tscn
 export (PackedScene) var Btn # ButtonWithIcon.tscn
 export (PackedScene) var SettingsControl
+export (PackedScene) var HUD
 var notes = ['C','D','E','F','G','A','B']
 var numnotes = notes.size()
 var sel_player # store the handle to the selected player sprite
@@ -43,10 +44,10 @@ var lbl50
 var lbl100
 #start_stop game button
 var play_game_button
-var lbl_score
+#var lbl_score
 var score = 0 # store the score
 var num_pts
-var pg_label # handle to the label displaying "Play Game" or "stop game"
+#var pg_label # handle to the label displaying "Play Game" or "stop game"
 var lives_remaining = Array() # holds pointers to lives in the lives Array - remove as die
 # handles to the radio buttons for user selected options
 var but_treble # select for treble clef
@@ -66,6 +67,7 @@ var dynamic_font = DynamicFont.new()
 var arrow_rt
 var arrow_lt
 var set_panel # instance of the settings panel
+var hud # instance of the HUD scene
 #print(numnotes)
 #var selected_texture=load("res://Icons/FilledSquareBlue.svg")
 #var unsel_texture = load('res://Icons/OpenSquareBlue.svg')
@@ -79,6 +81,14 @@ var region_option_sel # string to track which option is selected
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# add HUD
+	hud = HUD.instance()
+	# hide the lives that look like players - will add note lives
+	hud.hide_lives()
+	add_child(hud)
+	# listen for play/stop and back signals
+	hud.connect("start_stop",self,'play_stop')
+#	hud.connect("go_back",self,'go_to_main_menu') # this is now in HUD
 	# connect the settings expand/collapse button to code
 #	$ExpandCollapse.connect("pressed", self, 'show_hide_settings')
 #	arrow_rt = load('res://Icons/RightBlack.svg')
@@ -118,8 +128,8 @@ func _ready():
 	clef.connect("object_entered_clef", self, 'note_reached_end')
 	# add labels at 0%, 50%, 100% lines on clef
 	
-	lbl_instructions = add_label('Select the correct player before the note slides off the staff.',Vector2(clef_x_offset,50),50)
-	
+#	lbl_instructions = add_label('Select the correct player before the note slides off the staff.',Vector2(clef_x_offset,50),50)
+	hud.display_instructions('Select the correct player before the note reaches the clef mark.')
 	var fontsz = 50
 	lbl0 = add_label('0%',Vector2(x0*clef_scale + clef_x_offset,clef_y_offset - fontsz),fontsz)
 	lbl50 = add_label('50%',Vector2(x50*clef_scale + clef_x_offset,clef_y_offset - fontsz),fontsz)
@@ -222,7 +232,7 @@ func _ready():
 #	settings_panel = Polygon2D.new() #PanelContainer.new()
 	set_panel = SettingsControl.instance()
 	# connect to callback
-#	set_panel.connect("show_hide", self, 'show_hide_settings')
+	set_panel.connect("show_hide", self, 'show_hide_settings')
 	var pg_pts = set_panel.get_polygon_pts() #$SettingsPanel.polygon
 #	var xpanel = clef_x_offset
 #	var y
@@ -277,39 +287,39 @@ func _ready():
 #	var vbox_size = settingsbox.rect_size
 #	settings_panel.rect_position = Vector2(clef_x_offset,clef_y_offset+clef.get_height()*clef_scale)
 #	vbox.position = Vector2(20,100)
-	# add the start-stop game button
-	play_game_button = Button.new()
-	dynamic_font.font_data = load("res://Fonts/Roboto-Medium.ttf")
-	play_game_button.set("custom_fonts/font",dynamic_font)
-	play_game_button.set("custom_colors/font_color",Color(1,1,1))
-	play_game_button.get("custom_fonts/font").set_size(fontsz+5)
-#	play_game_button.text = 'Play'
+#	# add the start-stop game button
+#	play_game_button = Button.new()
+#	dynamic_font.font_data = load("res://Fonts/Roboto-Medium.ttf")
+#	play_game_button.set("custom_fonts/font",dynamic_font)
+#	play_game_button.set("custom_colors/font_color",Color(1,1,1))
+#	play_game_button.get("custom_fonts/font").set_size(fontsz+5)
+##	play_game_button.text = 'Play'
 	var lbl_dx = 10
 	var lbl_y = player.position.y
-	pg_label = add_label('Play\nGame',Vector2(lbl_dx,0),fontsz,Color(1,1,1),play_game_button)
-	pg_label.align = Label.ALIGN_CENTER
-	add_child(play_game_button)
-	var but_size = play_game_button.get_size() #rect_size.x # = (Vector2(but_width,20))
-	var pg_size = pg_label.rect_size
-#	play_game_button.rect_position = (Vector2(x_1stplayer/2-but_size.x/1.2,lbl_y+but_size.y))
-	play_game_button.set_size(pg_size+Vector2(2*lbl_dx,0))
-	but_size = play_game_button.get_size()
-	#lbl_y -= pg_size.y/2 # place higher on screen
-#	play_game_button.rect_position = (Vector2(x_1stplayer/2-pg_size.x,lbl_y))
-	play_game_button.rect_position = (Vector2(ProjectSettings.get_setting("display/window/size/width") - but_size.x - 20,20))
-	# connect the button mouse pressed signal to a callback function
-	play_game_button.connect("pressed", self, 'play_stop')
+#	pg_label = add_label('Play\nGame',Vector2(lbl_dx,0),fontsz,Color(1,1,1),play_game_button)
+#	pg_label.align = Label.ALIGN_CENTER
+#	add_child(play_game_button)
+#	var but_size = play_game_button.get_size() #rect_size.x # = (Vector2(but_width,20))
+#	var pg_size = pg_label.rect_size
+##	play_game_button.rect_position = (Vector2(x_1stplayer/2-but_size.x/1.2,lbl_y+but_size.y))
+#	play_game_button.set_size(pg_size+Vector2(2*lbl_dx,0))
+#	but_size = play_game_button.get_size()
+#	#lbl_y -= pg_size.y/2 # place higher on screen
+##	play_game_button.rect_position = (Vector2(x_1stplayer/2-pg_size.x,lbl_y))
+#	play_game_button.rect_position = (Vector2(ProjectSettings.get_setting("display/window/size/width") - but_size.x - 20,20))
+#	# connect the button mouse pressed signal to a callback function
+#	play_game_button.connect("pressed", self, 'play_stop')
 	
 	# add the score label
 	var lbl_x = player.position.x + player.get_sprite_size().x*player.scale.x/2
 	var rt_margin = 20
 #	lbl_y = lbl_y - player.get_sprite_size().y*player.scale.y/2
-	var lbl_s = add_label('Score:',Vector2(lbl_x+lbl_dx,lbl_y),fontsz-10,Color(1,1,1))
-	lbl_s.rect_size.x = ProjectSettings.get_setting("display/window/size/width")-lbl_x-lbl_dx-rt_margin
-	lbl_s.align = Label.ALIGN_RIGHT
-	lbl_score = add_label('0',Vector2(lbl_x+lbl_dx,lbl_y + fontsz + 10),fontsz+5,Color(1,1,1))
-	lbl_score.rect_size.x = ProjectSettings.get_setting("display/window/size/width")-lbl_x-lbl_dx-rt_margin
-	lbl_score.align = Label.ALIGN_RIGHT
+#	var lbl_s = add_label('Score:',Vector2(lbl_x+lbl_dx,lbl_y),fontsz-10,Color(1,1,1))
+#	lbl_s.rect_size.x = ProjectSettings.get_setting("display/window/size/width")-lbl_x-lbl_dx-rt_margin
+#	lbl_s.align = Label.ALIGN_RIGHT
+#	lbl_score = add_label('0',Vector2(lbl_x+lbl_dx,lbl_y + fontsz + 10),fontsz+5,Color(1,1,1))
+#	lbl_score.rect_size.x = ProjectSettings.get_setting("display/window/size/width")-lbl_x-lbl_dx-rt_margin
+#	lbl_score.align = Label.ALIGN_RIGHT
 #	lbl_score2.set_align(Label.ALIGN_RIGHT)
 
 	
@@ -317,7 +327,7 @@ func _ready():
 	var numlives = 14
 	var life
 	var lifex = clef_x_offset
-	var lifey = ProjectSettings.get_setting("display/window/size/height") - 50
+	var lifey = ProjectSettings.get_setting("display/window/size/height") - 60
 	var dxlife = clef_new_width / (numlives-1)
 	var nnotes = notes.size()
 	for n in range(numlives):
@@ -357,13 +367,14 @@ func add_option(but_group,but_string,is_sel):
 func play_stop():
 	# called when user selects the play / stop button
 	# set the playing variable and change the label name
-	lbl_instructions.visible = false
+#	lbl_instructions.visible = false
+	hud.hide_instructions()
 	clef.clear_settings_notes()
 	if playing:
 		end_game()
 	else:
 		playing = true
-		pg_label.text = 'Stop\nGame'
+#		pg_label.text = 'Stop\nGame'
 		# hide the settings
 		show_hide_settings()
 		level1()
@@ -420,7 +431,8 @@ func add_label(txt,pos,sz,clr = Color(1,1,1),par=self):
 	return label0
 	
 func update_score(new_score):
-	lbl_score.text = str(new_score)
+	hud.update_score(new_score)
+#	lbl_score.text = str(new_score)
 	score = new_score
 	
 func reset_lives():
@@ -442,6 +454,9 @@ func level1():
 		
 		# clear out previous results
 		clear_results()
+		
+		# hide settings
+		set_panel.hide_settings()
 		
 		# randomly show a player - this is repeated code from Main.gd - should move elsewhere
 		randomize() # reseed random number generator
@@ -481,7 +496,9 @@ func end_game():
 	# set playing to false and change the button to say "Play Game"
 #	play_stop()
 	playing = false
-	pg_label.text = 'Play\nGame'
+	# change the stop button to play
+	hud.stop()
+#	pg_label.text = 'Play\nGame'
 	
 	# delete notes, reset players, stop all note creation
 	reset_players()
@@ -489,10 +506,13 @@ func end_game():
 		n.queue_free()
 	notes_array.clear()
 	
-	# display game over
+	# display game over / hide clef
+	clef.visible = false
 	var go_label = add_label('Game Over', Vector2(430,300),200, Color(0,0,1))
 	yield(get_tree().create_timer(2), "timeout")
 	go_label.queue_free()
+	# show clef
+	clef.visible = true
 	# show statistics
 	# loop over all of the notes tested
 	# TODO: move this into a get function within Clef.gd
@@ -689,33 +709,11 @@ func _input(event):
 
 func change_notes(grp):
 	# change the icon
-	print ('hi')
 #	var seltext
 	if grp == note_bg:
 		note_option_sel = grp.sel_text
 	elif grp == region_bg:
 		region_option_sel = grp.sel_text
-#	for b in grp.get_buttons():
-#		if b.pressed == true:
-#			print('true')
-##			seltext = b.text
-#			if grp == note_bg:
-#				note_option_sel = grp.sel_text
-#			elif grp == region_bg:
-#				region_option_sel = grp.sel_text
-##				draw ( RID canvas_item, Vector2 pos, Color modulate=Color(1,1,1,1), bool transpose=false )
-#
-##			selected_texture.draw(b.icon, Vector2(0,0), Color(1,0,1,1), false )
-##			b.icon = selected_texture
-##			b.icon.color = Color(0,1,0)
-#			# try setting a color on the texture
-##			for c in b.get_children():
-##				print('type = ', c.typeof())
-##			b.icon.modulate = Color(0,1,0)
-#		else:
-#			print('false')
-##			b.Selected.visible
-#			b.icon = unsel_texture
 	clef.show_sel_notes(note_option_sel,region_option_sel)
 	
 	
@@ -758,10 +756,12 @@ func add_button(butgrp,txt,sz):
 		return but
 	
 func show_hide_settings():
-	set_panel.show_hide_settings()
-#	if $SettingsPanel.visible == true: #settings_panel.visible == true:
-#		$SettingsPanel.visible = false #settings_panel.visible = false
-#		$ExpandCollapse.texture_normal = arrow_rt
-#	else:
-#		$SettingsPanel.visible = true #settings_panel.visible = true
-#		$ExpandCollapse.texture_normal = arrow_lt
+#	set_panel.show_hide_settings()
+#	# remove the notes from the clef
+	if set_panel.panel_visible() == false:
+		clef.clear_settings_notes()
+	else:
+		clef.show_sel_notes(note_option_sel,region_option_sel)
+
+func go_to_main_menu():
+	get_tree().change_scene("res://MainMenu.tscn")

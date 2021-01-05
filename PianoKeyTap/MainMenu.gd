@@ -56,7 +56,30 @@ func go_to_game(button):
 	elif button.name == "Level2":
 		get_tree().change_scene("res://Frogger.tscn")
 	elif button.name == "Level3":
-		pass
+		var lbl = Label.new()
+		var df = DynamicFont.new()
+		df.font_data = load("res://Fonts/Roboto-Medium.ttf")
+		df.size = 50
+		lbl.set("custom_fonts/font",df)
+		lbl.set("custom_colors/font_color",Color(1,1,1))
+		lbl.get("custom_fonts/font").set_size(50)
+		lbl.text = 'Under Construction'
+
+		var butpos = button.rect_position
+		var butsz = button.rect_size
+		add_child(lbl)
+		var sz = lbl.rect_size
+		lbl.rect_position = Vector2(butpos.x+butsz.x/2-sz.x/2,butpos.y-sz.y)
+		yield(get_tree().create_timer(3.0), "timeout")
+		lbl.queue_free()
+		
+#		var dialog = AcceptDialog.new()
+#		dialog.dialog_text = 'Level 3 - Under Construction'
+#		dialog.window_title = 'Coming Soon'
+#		dialog.connect('modal_closed', dialog, 'queue_free')
+#		add_child(dialog)
+#		dialog.rect_position = button.rect_position
+#		dialog.popup_centered()
 #		get_tree().change_scene("res://Main.tscn")
 
 	

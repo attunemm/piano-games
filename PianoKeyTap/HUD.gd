@@ -1,8 +1,13 @@
 extends CanvasLayer
 
+signal start_stop
+signal go_back
 
 # Declare member variables here. 
 var life_size_y = 120 #pixels
+# preload textures
+var start_texture = load("res://Icons/PlayWhiteSquare.png")
+var stop_texture = load("res://Icons/StopWhiteSquare.png")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -14,7 +19,9 @@ func _ready():
 	adjust_lives_sizes($LivesBox/Life5)
 	adjust_lives_sizes($LivesBox/Life6)
 	adjust_lives_sizes($LivesBox/Life7)
-
+	$PlayButton.connect("button_up",self,"start_stop_switch")
+	$BackButton.connect("button_up",self,"back_arrow")
+	
 func adjust_lives_sizes(life_sprite):
 	var lt = life_sprite.texture
 	var ts = lt.get_size().y
@@ -26,7 +33,11 @@ func adjust_lives_sizes(life_sprite):
 	
 func display_instructions(instructions):
 	$InstructionsLabel.text = instructions
+	$InstructionsLabel.visible = true
 	
+func hide_instructions():
+	$InstructionsLabel.visible = false
+		
 func show_message(text):
 	$Message.text = text
 	$Message.visible = true
@@ -63,6 +74,14 @@ func reset_lives():
 	$LivesBox/Life6.modulate = Color(1,1,1,1)
 	$LivesBox/Life7.modulate = Color(1,1,1,1)
 
+func hide_lives():
+	$LivesBox/Life.visible = false
+	$LivesBox/Life2.visible = false
+	$LivesBox/Life3.visible = false
+	$LivesBox/Life4.visible = false
+	$LivesBox/Life5.visible = false
+	$LivesBox/Life6.visible = false
+	$LivesBox/Life7.visible = false
 func hide():
 	$ScoreBox.hide()
 
@@ -70,10 +89,20 @@ func show():
 	$ScoreBox.show()
 
 func update_score(value):
-	$ScoreBox/VBoxContainer/HBoxContainer/Score.text = str(value)
+	$ScoreBox/Score.text = str(value)
 
 func start_stop_switch():
-	if $ScoreBox/VBoxContainer/StartButton.text == 'Start':
-		$ScoreBox/VBoxContainer/StartButton.text == 'Stop'
-	elif $ScoreBox/VBoxContainer/StartButton.text == 'Stop':
-		$ScoreBox/VBoxContainer/StartButton.text == 'Start'
+	if $PlayButton.texture_normal == start_texture: #$ScoreBox/VBoxContainer/StartButton.text == 'Start':
+#		$ScoreBox/VBoxContainer/StartButton.text == 'Stop'
+		$PlayButton.texture_normal = stop_texture
+	elif $PlayButton.texture_normal == stop_texture: #$ScoreBox/VBoxContainer/StartButton.text == 'Stop':
+#		$ScoreBox/VBoxContainer/StartButton.text == 'Start'
+		$PlayButton.texture_normal = start_texture
+	emit_signal("start_stop")
+	
+func stop():
+	$PlayButton.texture_normal = start_texture
+	
+func back_arrow():
+	get_tree().change_scene("res://MainMenu.tscn")
+	emit_signal('go_back')

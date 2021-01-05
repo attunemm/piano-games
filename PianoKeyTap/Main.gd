@@ -50,7 +50,7 @@ func _ready():
 	set_physics_process(true)
 	# based on the mode, set the radiobuttons and hide options
 #	$HUD.hide_settings()
-	var instructions = 'Press Start to begin playing Piano Tap Dance %s. \nEarn points by selecting the correct key before the player falls off the screen.'
+	var instructions = 'Select the correct key before the player falls off the screen.'
 	var inset
 #	TODO: replace set_mode_selected with updated code with setting panel
 	if mode == NATURAL:
@@ -70,13 +70,13 @@ func _ready():
 		inset = '- All Notes'
 #		notes = all_notes
 	elif mode == USER_SELECT:
-		inset = '(adjust settings below)'
+		inset = ''#(adjust settings below)'
 #		$HUD.show_settings()
-	$HUD.display_instructions(instructions % inset)
+	$HUD.display_instructions(instructions) # % inset)
 	
 	# connect to the signal emitted by the start button
-	
-	$HUD/ScoreBox/VBoxContainer/StartButton.connect('button_up', self, 'start_game')
+	$HUD.connect('start_stop',self,'start_game')
+#	$HUD/ScoreBox/VBoxContainer/StartButton.connect('button_up', self, 'start_game')
 #	$HUD/KeyOptionsBox/HBoxContainer/StartButton.connect('button_up', self, 'start_game')
 
 	# load the settings
@@ -158,7 +158,7 @@ func stop_game():
 #	if mode == USER_SELECT:
 #		$HUD.show_settings()
 #	# change text to Start
-	$HUD/ScoreBox/VBoxContainer/StartButton.set_text('Start')
+#	$HUD/ScoreBox/VBoxContainer/StartButton.set_text('Start')
 	# hide the player and defender
 	player.state = 'unset'
 	player.velocity = Vector2(0,0)
@@ -172,6 +172,27 @@ func stop_game():
 	# reset the keys
 	octave.reset_all_keys()
 	
+	# display game over / hide clef
+	octave.visible = false
+	var go_label = add_label('Game Over', Vector2(430,300),200, Color(0,0,1))
+	yield(get_tree().create_timer(2), "timeout")
+	go_label.queue_free()
+	# show clef
+	octave.visible = true
+	
+func add_label(txt,pos,sz,clr = Color(1,1,1),par=self):
+	
+	var label0 = Label.new()
+	label0.text = txt
+	var df = DynamicFont.new()
+	df.font_data = load('res://Fonts/Roboto-Medium.ttf')
+	label0.set("custom_fonts/font",df)
+	label0.set("custom_colors/font_color",clr)
+	label0.get("custom_fonts/font").set_size(sz)
+	label0.rect_position.x = pos.x
+	label0.rect_position.y = pos.y
+	par.add_child(label0)
+	return label0
 func start_game():
 	if is_running:
 		# user hit "Stop"
@@ -192,7 +213,7 @@ func start_game():
 		# hide the options box
 #		$HUD/KeyOptionsBox.visible = false
 		# change text to Stop
-		$HUD/ScoreBox/VBoxContainer/StartButton.set_text('Stop')
+#		$HUD/ScoreBox/VBoxContainer/StartButton.set_text('Stop')
 		# reset the score and player velocity
 		score = 0
 		$HUD.update_score(score)
@@ -229,9 +250,9 @@ func level1():
 	octave.reset_all_keys()
 	
 	if nlives_remaining < 1:
-		$HUD.start_stop_switch() # change button to "start"
+		$HUD.stop() #start_stop_switch() # change button to "start"
 		# let the user know the game is over
-		$HUD.show_message('Game Over')
+#		$HUD.show_message('Game Over')
 		stop_game() # this will end the game
 		# TODO: display settings menu
 		return # stop code

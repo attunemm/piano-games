@@ -6,15 +6,15 @@
 [ext_resource path="res://Clef.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Fonts/Roboto-Medium.ttf" type="DynamicFontData" id=5]
 
-[sub_resource type="StyleBoxEmpty" id=3]
+[sub_resource type="StyleBoxEmpty" id=1]
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="DynamicFont" id=2]
 size = 60
 font_data = ExtResource( 5 )
 
-[sub_resource type="StyleBoxEmpty" id=4]
+[sub_resource type="StyleBoxEmpty" id=3]
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=4]
 size = 60
 font_data = ExtResource( 5 )
 
@@ -28,18 +28,18 @@ font_data = ExtResource( 5 )
 size = 60
 font_data = ExtResource( 5 )
 
-[sub_resource type="StyleBoxEmpty" id=9]
+[sub_resource type="StyleBoxEmpty" id=8]
 
-[sub_resource type="DynamicFont" id=8]
+[sub_resource type="DynamicFont" id=9]
 size = 60
 font_data = ExtResource( 5 )
 
-[sub_resource type="ButtonGroup" id=12]
+[sub_resource type="ButtonGroup" id=10]
 resource_name = "my_buttons"
 
-[sub_resource type="StyleBoxEmpty" id=10]
+[sub_resource type="StyleBoxEmpty" id=11]
 
-[sub_resource type="DynamicFont" id=11]
+[sub_resource type="DynamicFont" id=12]
 size = 60
 font_data = ExtResource( 5 )
 
@@ -68,8 +68,8 @@ margin_top = -39.5399
 margin_right = 383.472
 margin_bottom = 37.4601
 hint_tooltip = "Match the note name to the correct key.."
-custom_styles/normal = SubResource( 3 )
-custom_fonts/font = SubResource( 1 )
+custom_styles/normal = SubResource( 1 )
+custom_fonts/font = SubResource( 2 )
 text = "Key : Note"
 align = 1
 __meta__ = {
@@ -87,8 +87,8 @@ margin_left = 75.0
 margin_top = -39.209
 margin_right = 405.0
 margin_bottom = 37.791
-custom_styles/normal = SubResource( 4 )
-custom_fonts/font = SubResource( 2 )
+custom_styles/normal = SubResource( 3 )
+custom_fonts/font = SubResource( 4 )
 text = "Note : Staff"
 align = 1
 __meta__ = {
@@ -131,9 +131,9 @@ margin_top = 606.0
 margin_right = 856.0
 margin_bottom = 677.0
 rect_rotation = -45.0
-custom_styles/normal = SubResource( 9 )
-custom_fonts/font = SubResource( 8 )
-group = SubResource( 12 )
+custom_styles/normal = SubResource( 8 )
+custom_fonts/font = SubResource( 9 )
+group = SubResource( 10 )
 text = "Level 1"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -145,8 +145,8 @@ margin_top = 475.0
 margin_right = 1339.0
 margin_bottom = 546.0
 rect_rotation = 45.0
-custom_styles/normal = SubResource( 10 )
-custom_fonts/font = SubResource( 11 )
+custom_styles/normal = SubResource( 11 )
+custom_fonts/font = SubResource( 12 )
 group = SubResource( 13 )
 text = "Level 2"
 __meta__ = {
@@ -158,8 +158,8 @@ margin_left = 868.0
 margin_top = 722.0
 margin_right = 1068.0
 margin_bottom = 793.0
-custom_styles/normal = SubResource( 9 )
-custom_fonts/font = SubResource( 8 )
+custom_styles/normal = SubResource( 8 )
+custom_fonts/font = SubResource( 9 )
 text = "Level 3"
 __meta__ = {
 "_edit_use_anchors_": false
