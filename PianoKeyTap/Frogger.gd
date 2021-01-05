@@ -233,6 +233,7 @@ func _ready():
 	set_panel = SettingsControl.instance()
 	# connect to callback
 	set_panel.connect("show_hide", self, 'show_hide_settings')
+	set_panel.hide_instructions()
 	var pg_pts = set_panel.get_polygon_pts() #$SettingsPanel.polygon
 #	var xpanel = clef_x_offset
 #	var y
@@ -341,7 +342,7 @@ func _ready():
 		lifex += dxlife
 	# set the initial spacing between subsequent notes
 	set_note_offset()
-	clef.show_sel_notes(note_option_sel,region_option_sel)
+#	clef.show_sel_notes(note_option_sel,region_option_sel)
 #	# begin the game
 #	level1()
 	
@@ -457,6 +458,7 @@ func level1():
 		
 		# hide settings
 		set_panel.hide_settings()
+		set_panel.hide_instructions()
 		
 		# randomly show a player - this is repeated code from Main.gd - should move elsewhere
 		randomize() # reseed random number generator

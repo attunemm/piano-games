@@ -194,6 +194,7 @@ func add_label(txt,pos,sz,clr = Color(1,1,1),par=self):
 	par.add_child(label0)
 	return label0
 func start_game():
+	set_panel.hide_instructions()
 	if is_running:
 		# user hit "Stop"
 		stop_game()

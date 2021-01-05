@@ -6,15 +6,15 @@
 [ext_resource path="res://Icons/BackWhiteSquare.png" type="Texture" id=5]
 [ext_resource path="res://Icons/PlayWhiteSquare.png" type="Texture" id=6]
 
-[sub_resource type="DynamicFontData" id=8]
+[sub_resource type="DynamicFontData" id=1]
 resource_local_to_scene = true
 font_path = "res://Fonts/Roboto-Medium.ttf"
 
-[sub_resource type="DynamicFont" id=9]
+[sub_resource type="DynamicFont" id=2]
 size = 64
-font_data = SubResource( 8 )
+font_data = SubResource( 1 )
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=3]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("Message:custom_fonts/font:size")
@@ -41,7 +41,7 @@ tracks/1/keys = {
 "values": [ true ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=4]
 length = 1.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Message:visible")
@@ -80,19 +80,19 @@ tracks/2/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="DynamicFontData" id=1]
+[sub_resource type="DynamicFontData" id=5]
 font_path = "res://Fonts/Roboto-Medium.ttf"
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=6]
 size = 40
 outline_color = Color( 0.623529, 0.447059, 0.0196078, 1 )
-font_data = SubResource( 1 )
+font_data = SubResource( 5 )
 
-[sub_resource type="DynamicFont" id=13]
+[sub_resource type="DynamicFont" id=7]
 size = 64
 font_data = ExtResource( 1 )
 
-[sub_resource type="StyleBoxFlat" id=14]
+[sub_resource type="StyleBoxFlat" id=8]
 bg_color = Color( 0.188235, 0.266667, 0.533333, 1 )
 corner_radius_top_left = 2
 corner_radius_top_right = 2
@@ -103,44 +103,44 @@ expand_margin_right = 8.0
 expand_margin_top = 8.0
 expand_margin_bottom = 8.0
 
-[sub_resource type="DynamicFont" id=15]
+[sub_resource type="DynamicFont" id=9]
 size = 64
 outline_color = Color( 0.0980392, 0.772549, 0.156863, 1 )
 font_data = ExtResource( 1 )
 
-[sub_resource type="DynamicFont" id=16]
+[sub_resource type="DynamicFont" id=10]
 size = 32
 font_data = ExtResource( 1 )
 
-[sub_resource type="StreamTexture" id=17]
+[sub_resource type="StreamTexture" id=11]
 flags = 4
 load_path = "res://.import/A_no_hat.png-3669523387eee9d6332be96da418e3a9.stex"
 
-[sub_resource type="StreamTexture" id=18]
+[sub_resource type="StreamTexture" id=12]
 flags = 4
 load_path = "res://.import/B_no_hat.png-875d201782c18d9c2c9ba01a5c0e5962.stex"
 
-[sub_resource type="StreamTexture" id=19]
+[sub_resource type="StreamTexture" id=13]
 flags = 4
 load_path = "res://.import/C_no_hat.png-9a8d133be06e4dc792711d298106f12c.stex"
 
-[sub_resource type="StreamTexture" id=20]
+[sub_resource type="StreamTexture" id=14]
 flags = 4
 load_path = "res://.import/D_no_hat.png-3d1a9028acdc17a22f8171456e3f066a.stex"
 
-[sub_resource type="StreamTexture" id=21]
+[sub_resource type="StreamTexture" id=15]
 flags = 4
 load_path = "res://.import/E_no_hat2.png-5ac3de0c559699dc44534de8382848e7.stex"
 
-[sub_resource type="StreamTexture" id=22]
+[sub_resource type="StreamTexture" id=16]
 flags = 4
 load_path = "res://.import/F no hat 2.png-580a6a9635918993511cd7b0bb496195.stex"
 
-[sub_resource type="StreamTexture" id=23]
+[sub_resource type="StreamTexture" id=17]
 flags = 4
 load_path = "res://.import/G_no_hat.png-51d8925ca610c99992719aaaed07ee18.stex"
 
-[sub_resource type="DynamicFont" id=24]
+[sub_resource type="DynamicFont" id=18]
 size = 42
 font_data = ExtResource( 1 )
 
@@ -155,7 +155,7 @@ margin_right = 1082.0
 margin_bottom = 505.0
 grow_horizontal = 2
 grow_vertical = 2
-custom_fonts/font = SubResource( 9 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0.996078, 0.635294, 0.0117647, 1 )
 text = "Game Over!"
 align = 1
@@ -166,8 +166,8 @@ __meta__ = {
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 method_call_mode = 1
-anims/init = SubResource( 10 )
-anims/show_message() = SubResource( 11 )
+anims/init = SubResource( 3 )
+anims/show_message() = SubResource( 4 )
 
 [node name="ScoreBox" type="VBoxContainer" parent="."]
 margin_left = 1480.0
@@ -184,7 +184,7 @@ __meta__ = {
 margin_right = 400.0
 margin_bottom = 48.0
 size_flags_vertical = 5
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 6 )
 text = "Score "
 align = 2
 valign = 1
@@ -196,7 +196,7 @@ __meta__ = {
 margin_top = 52.0
 margin_right = 400.0
 margin_bottom = 128.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 7 )
 text = "0"
 align = 2
 valign = 1
@@ -210,8 +210,8 @@ margin_left = 722.0
 margin_top = 205.0
 margin_right = 1117.0
 margin_bottom = 360.0
-custom_styles/normal = SubResource( 14 )
-custom_fonts/font = SubResource( 15 )
+custom_styles/normal = SubResource( 8 )
+custom_fonts/font = SubResource( 9 )
 custom_colors/font_color = Color( 0.0980392, 0.772549, 0.156863, 1 )
 text = "Streak bonus:
 10 points!!"
@@ -226,7 +226,7 @@ margin_left = 40.0
 margin_top = 1040.0
 margin_right = 672.0
 margin_bottom = -2.0
-custom_fonts/font = SubResource( 16 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.705882, 0.705882, 0.705882, 1 )
 text = "Copyright 2020 Attune Music and Math, LLC"
 __meta__ = {
@@ -253,46 +253,47 @@ texture = ExtResource( 4 )
 [node name="Life" type="Sprite" parent="LivesBox"]
 position = Vector2( 943, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 17 )
+texture = SubResource( 11 )
 
 [node name="Life2" type="Sprite" parent="LivesBox"]
 position = Vector2( 1025, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 18 )
+texture = SubResource( 12 )
 
 [node name="Life3" type="Sprite" parent="LivesBox"]
 position = Vector2( 1101, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 19 )
+texture = SubResource( 13 )
 
 [node name="Life4" type="Sprite" parent="LivesBox"]
 position = Vector2( 1170, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 20 )
+texture = SubResource( 14 )
 
 [node name="Life5" type="Sprite" parent="LivesBox"]
 position = Vector2( 1245, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 21 )
+texture = SubResource( 15 )
 
 [node name="Life6" type="Sprite" parent="LivesBox"]
 position = Vector2( 1317, -5 )
 scale = Vector2( 0.16, 0.16 )
-texture = SubResource( 22 )
+texture = SubResource( 16 )
 
 [node name="Life7" type="Sprite" parent="LivesBox"]
 position = Vector2( 1390, -5 )
 scale = Vector2( 0.1, 0.1 )
-texture = SubResource( 23 )
+texture = SubResource( 17 )
 
 [node name="InstructionsLabel" type="Label" parent="."]
-margin_left = 160.0
-margin_top = 30.201
-margin_right = 1288.0
-margin_bottom = 133.201
-custom_fonts/font = SubResource( 24 )
+margin_left = 157.172
+margin_top = 21.7157
+margin_right = 1285.17
+margin_bottom = 124.716
+custom_fonts/font = SubResource( 18 )
 text = "Adjust the settings below, then click \"Start\" to begin playing.
 Or, tap the keys to make up your own song."
+valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
