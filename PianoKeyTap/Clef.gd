@@ -314,6 +314,10 @@ func clear_settings_notes():
 		
 	settings_notes.clear()
 
+func hide_sel_notes():
+	for n in settings_notes:
+		n.visible = false
+		
 func get_sel_note_idcs():
 	var nidcs = Array()
 	var i = 0

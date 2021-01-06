@@ -42,4 +42,5 @@ offset = Vector2( 60, 30 )
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 visible = false
+color = Color( 0.476563, 0.139618, 0.476563, 1 )
 polygon = PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0 )

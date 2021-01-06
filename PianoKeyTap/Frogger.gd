@@ -342,7 +342,8 @@ func _ready():
 		lifex += dxlife
 	# set the initial spacing between subsequent notes
 	set_note_offset()
-#	clef.show_sel_notes(note_option_sel,region_option_sel)
+	clef.show_sel_notes(note_option_sel,region_option_sel)
+	clef.hide_sel_notes()
 #	# begin the game
 #	level1()
 	

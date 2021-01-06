@@ -15,9 +15,11 @@ var staff_wtoh = 1.1
 var staff_scale_y = 1.4
 var staff_x_offset = 1220
 var staff_y_offset = 650
+var waiting = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$LoadingMsg.visible = false
 	# add the keyboard
 	octave = Keyboard.instance()
 	octave.init(1) # only 1 octave
@@ -45,15 +47,33 @@ func _ready():
 	add_child(staff)
 	
 	# connect the buttons to go_to_game function
-	for button in self.get_children(): #get_tree().get_nodes_in_group("my_buttons"):
-		if button.get_class() == "Button":
-			button.connect("pressed", self, "go_to_game", [button])
+	$Level1.connect("pressed", self, "go_to_game", [$Level1])
+	$Arrow1/Label1.connect("pressed", self, "go_to_game", [$Level1])
+	$Level2.connect("pressed", self, "go_to_game", [$Level2])
+	$Arrow2/Label2.connect("pressed", self, "go_to_game", [$Level2])
+	$Level3.connect("pressed", self, "go_to_game", [$Level3])
+	$Arrow3/Label3.connect("pressed", self, "go_to_game", [$Level3])
+#	for button in self.get_children(): #get_tree().get_nodes_in_group("my_buttons"):
+#		if button.get_class() == "Button":
+#			button.connect("pressed", self, "go_to_game", [button])
 
+func show_wait():
+	$LoadingMsg.visible = true
+#	yield(get_tree().create_timer(0.5), "timeout")
+	
+func hide_wait():
+	$LoadingMsg.visible = false
+	
 func go_to_game(button):
-	print(button.name)
+
+#	print(button.name)
 	if button.name == "Level1":
+		show_wait()
+		yield(get_tree().create_timer(0.1), "timeout")
 		get_tree().change_scene("res://Main.tscn")
 	elif button.name == "Level2":
+		show_wait()
+		yield(get_tree().create_timer(0.1), "timeout")
 		get_tree().change_scene("res://Frogger.tscn")
 	elif button.name == "Level3":
 		var lbl = Label.new()
@@ -86,3 +106,6 @@ func go_to_game(button):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+#	if waiting:
+##		Wait.visible = true
+#		$Wait.rotation_degrees += 3.14159/60 * delta
