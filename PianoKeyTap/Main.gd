@@ -21,7 +21,7 @@ var screenWidth = ProjectSettings.get_setting("display/window/size/width")
 var screenHeight = ProjectSettings.get_setting("display/window/size/height")
 var max_x_offset = screenWidth*2/5 # can move up to 6 keys right out of 15 keys displayed at a time
 var scale_factor = screenHeight/504 #2 # original numbers were all based on 896x504 pixel window
-var oct_scale = 0.585 # * scale_factor # scale to fit 2 octaves on the screen
+var oct_scale = 0.585 # scale to fit 2 octaves on the screen
 var octave_y_offset = 100 * scale_factor
 var octave_x_offset = 0
 var white_notes = ['A','B','C','D','E','F','G']
@@ -36,6 +36,11 @@ var nlives_remaining # track how many lives are left
 var nlives_initial = 7 # initial number of lives
 var off_screen_pixels = 500 # number of pixels to ensure a play is offscreen - could make this a calculation
 var move_octave = false
+var margin_factor = 4 # half this number is the # of sprite widths to leave as margin on the sice
+var xrange # pixels to place the falling players in the x-dimension
+var x0 # offset from left edge for placing falling players in the x-dimension
+var player_height # force players to be the same height
+
 #var can_select_key = true # controls whether the user can select a key (one key at a time)
 #var sel_key = ''
 
@@ -76,14 +81,14 @@ func _ready():
 	
 	# connect to the signal emitted by the start button
 	$HUD.connect('start_stop',self,'start_game')
-#	$HUD/ScoreBox/VBoxContainer/StartButton.connect('button_up', self, 'start_game')
-#	$HUD/KeyOptionsBox/HBoxContainer/StartButton.connect('button_up', self, 'start_game')
 
 	# load the settings
 	set_panel = SettingsControl.instance()
+	# change the label
+	set_panel.set_instructions('Expand settings for sharps, flats, and more!')
 	# create the settings groups
 	var og1 = OptionsGrp.instance()
-	og1.init('Notes:',['Natural','Sharp','Flat','All'],50,'All')
+	og1.init('Notes:',['Natural','Sharp','Flat','All'],50,'Natural')
 	var og2 = OptionsGrp.instance()
 	og2.init('Colors:',['7','2'],50,'7')
 	var og3 = OptionsGrp.instance()
@@ -107,23 +112,19 @@ func _ready():
 	octave.init(3) # 3 octaves
 	octave.set_scale(Vector2(oct_scale,oct_scale))
 	octave.set_position(Vector2(octave_x_offset,octave_y_offset))
-#	var oct_ext = octave.get_extents()
-#	print('octave size: ', oct_ext)
-	#octave.connect("keysel", self, "set_sel_key")
 	add_child(octave)
 	
 	# listen to the octave keysel signal
 	octave.connect("key_selected", self, "compare_key_to_player")
+	#octave.connect("keysel", self, "set_sel_key")
 	# determine the size of the octave
 	var oct_pixels = octave.get_pixels()
-#	print('oct_pixels = ', oct_pixels)
-
-	#locate the settings panel based on the size of the octave
 	
+	#locate the settings panel based on the size of the octave
 	set_panel.position.y = screenHeight - set_panel.get_height() #oct_pixels.y
 	
 	# set the size of the players to be 1/4 as tall as the white key
-	var player_height = oct_pixels[1]/2 * oct_scale * scale_factor
+	player_height = oct_pixels[1]/2 * oct_scale * scale_factor
 #	print('player height =', player_height)
 	# create the player that tells which note to tap
 	player = Players.instance()
@@ -145,6 +146,15 @@ func _ready():
 	player.velocity = Vector2(0,0)
 	defender.velocity = Vector2(0,0)
 	add_child(defender)
+	
+	# set the x-range for positioning the falling players
+	var player_size = player.get_sprite_size()
+#	var margin_factor = 4 # half this number is the # of sprite widths to leave as margin on the sice
+	xrange = (int(screenWidth-player_size.x*margin_factor))
+	x0 = player_size.x*(margin_factor/2)
+#	var xpos = randi()%xrange
+#	var xpos = randi_range(player_size.x,screenWidth-player_size.x)
+#	player.position = Vector2(xpos+player_size.x*(margin_factor/2+0.5)
 	
 	# load the HUD
 	$HUD.show()
@@ -304,11 +314,12 @@ func level1():
 	player.rotation = 0
 	# Set the player's position 
 	# pick a random x
-	var player_size = player.get_sprite_size()
-	var xrange = (int(screenWidth-player_size.x*2))
+#	var player_size = player.get_sprite_size()
+#	var margin_factor = 4 # half this number is the # of sprite widths to leave as margin on the sice
+#	var xrange = (int(screenWidth-player_size.x*margin_factor))
 	var xpos = randi()%xrange
 #	var xpos = randi_range(player_size.x,screenWidth-player_size.x)
-	player.position = Vector2(xpos+player_size.x/2,player_size.y/2)
+	player.position = Vector2(x0 + xpos, player_height/2) #Vector2(xpos+player_size.x*(margin_factor/2+0.5),player_size.y/2)
 	player.velocity = Vector2(0,player.fall_speed)
 	defender.position = Vector2(-500,-off_screen_pixels) # off screen
 	defender.velocity = Vector2(0,0)

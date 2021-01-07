@@ -9,15 +9,9 @@ var scale_factor = 2 # original sizes were based on 896 x 504 pixels
 var orig_color 
 var colorscale = 1
 var y_snaptopoint_shift = 2/3 # amount down a key to place a player
-var A_rgb = Color8(7,129,230)
-var B_rgb = Color8(75,25,75)
-var C_rgb = Color8(250,64,2)
-var D_rgb = Color8(1,161,40)
-var E_rgb = Color8(20,50,140)
-var F_rgb = Color8(220,55,95)
-var G_rgb = Color8(220,210,75)
 var highlight_when_play = true # true = highlight when playing the audio; use when playing notes outside the game
 var is_playing = false
+
 #var alt_note = '' # for keys that can be called by more than 1 name
 
 # Called when the node enters the scene tree for the first time.
@@ -208,19 +202,19 @@ func highlight(note_name_for_color): #(iscorrect):
 	elif note_name_for_color.find('incorrect') == 0:
 		c = [r[1],g[1],b[1]]
 	elif note_name_for_color.find('A') == 0:
-		c = A_rgb
+		c = Constants.A_rgb
 	elif note_name_for_color.find('B') == 0:
-		c = B_rgb
+		c = Constants.B_rgb
 	elif note_name_for_color.find('C') == 0:
-		c = C_rgb
+		c = Constants.C_rgb
 	elif note_name_for_color.find('D') == 0:
-		c = D_rgb
+		c = Constants.D_rgb
 	elif note_name_for_color.find('E') == 0:
-		c = E_rgb
+		c = Constants.E_rgb
 	elif note_name_for_color.find('F') == 0:
-		c = F_rgb
+		c = Constants.F_rgb
 	elif note_name_for_color.find('G') == 0:
-		c = G_rgb
+		c = Constants.G_rgb
 		
 #	highlight = Color(r[i]*cs, g[i]*cs, b[i]*cs, 1)
 #	$KeyShape.set_color(highlight)

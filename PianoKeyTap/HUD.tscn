@@ -141,7 +141,7 @@ flags = 4
 load_path = "res://.import/G_no_hat.png-51d8925ca610c99992719aaaed07ee18.stex"
 
 [sub_resource type="DynamicFont" id=18]
-size = 42
+size = 50
 font_data = ExtResource( 1 )
 
 [node name="HUD" type="CanvasLayer"]
@@ -287,9 +287,9 @@ texture = SubResource( 17 )
 
 [node name="InstructionsLabel" type="Label" parent="."]
 margin_left = 157.172
-margin_top = 21.7157
-margin_right = 1285.17
-margin_bottom = 124.716
+margin_top = 13.2304
+margin_right = 1497.17
+margin_bottom = 136.23
 custom_fonts/font = SubResource( 18 )
 text = "Adjust the settings below, then click \"Start\" to begin playing.
 Or, tap the keys to make up your own song."

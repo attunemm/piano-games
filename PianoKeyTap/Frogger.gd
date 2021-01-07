@@ -73,8 +73,8 @@ var hud # instance of the HUD scene
 #var unsel_texture = load('res://Icons/OpenSquareBlue.svg')
 #var selected_texture=load("res://Icons/FilledCircleGreenSmall.png")
 #var unsel_texture = load('res://Icons/UnfilledCircleGreenSmall.png')
-var selected_texture=load("res://Icons/HatWhiteFilled.png")
-var unsel_texture = load('res://Icons/HatWhiteUnfilled.png')
+#var selected_texture=load("res://Icons/HatWhiteFilled.png")
+#var unsel_texture = load('res://Icons/HatWhiteUnfilled.png')
 var note_option_sel # string to track which option is selected
 var region_option_sel # string to track which option is selected
 
@@ -169,7 +169,7 @@ func _ready():
 	clef_bg.init('Clef:',['Treble','Bass'],fontsz,'Treble') #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
 	
 	region_bg = Btn.instance() #ButtonGroup.new()
-	region_bg.init('Region:',['Staff','Leger','All'],fontsz,'All') #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
+	region_bg.init('Region:',['Staff','Leger','All'],fontsz,'Staff') #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
 	
 	note_bg = Btn.instance() #ButtonGroup.new()
 	note_bg.init('Notes:',['Lines','Spaces','All'],fontsz,'All') #init(['Opt 1','Opt 2', 'Opt 3'], 50, true)
@@ -178,68 +178,14 @@ func _ready():
 	clef_bg.connect("selection_changed", self, "change_clef",[clef_bg])
 	region_bg.connect("selection_changed", self, "change_notes",[region_bg])
 	note_bg.connect("selection_changed", self, "change_notes",[note_bg])
-	
-	# add the buttons to hbox and vbox containers
-	var clefbox = VBoxContainer.new() #HBoxContainer.new()
-	var regionbox = VBoxContainer.new() #HBoxContainer.new()
-	var notesbox = VBoxContainer.new() #HBoxContainer.new()
-	var settingsbox = HBoxContainer.new()
-	
-#	fontsz = 50
-#	# Clef options
-#	add_label('Clef:            ',Vector2(0,0),fontsz, Color(1,1,1),clefbox)
-#	clefbox.add_child(but_treble)
-#	clefbox.add_child(but_bass)
-#	add_label(' ',Vector2(0,0),fontsz, Color(1,1,1),clefbox)
-#
-#	# Region Options
-#	add_label('Region:       ',Vector2(0,0),fontsz, Color(1,1,1),regionbox)
-##	regionbox.add_child(clef_lbl)
-##	regionbox.add_child(but_high)
-##	regionbox.add_child(but_low)
-#	regionbox.add_child(but_staff)
-#	regionbox.add_child(but_leger)
-#	regionbox.add_child(but_all)
-#
-#	# Note options
-#	add_label('Notes:       ',Vector2(0,0),fontsz, Color(1,1,1),notesbox)
-#	notesbox.add_child(but_lines)
-#	notesbox.add_child(but_spaces)
-#	notesbox.add_child(but_allnotes)
-	
-#	settingsbox.add_child(clefbox)
-#	settingsbox.add_spacer(true)
-#	settingsbox.add_spacer(true)
-#	settingsbox.add_child(regionbox)
-#	settingsbox.add_spacer(true)
-#	settingsbox.add_child(notesbox)
-#	var pn = PanelContainer.new()
-#	pn.add_child(clef_bg)
-#	settingsbox.add_child(pn)
-#	settingsbox.add_child(clef_bg)
-#	var sz = clef_bg.get_scene_size() #clef_bg.get_vbox_size()
-##	settingsbox.add_spacer(true)
-##	settingsbox.add_spacer(true)
-#	settingsbox.add_child(region_bg)
-#	var delta = 50
-#	var xn = sz.x + delta
-#	region_bg.position.x = sz.x 
-#	sz = region_bg.get_scene_size() #get_vbox_size()
-##	settingsbox.add_spacer(true)
-#	settingsbox.add_child(note_bg)
-#	note_bg.position.x = xn + sz.x + delta
-	
+		
 #	settings_panel = Polygon2D.new() #PanelContainer.new()
 	set_panel = SettingsControl.instance()
 	# connect to callback
 	set_panel.connect("show_hide", self, 'show_hide_settings')
-	set_panel.hide_instructions()
+	set_panel.set_instructions('Expand settings for clef, leger lines, and more!')
+#	set_panel.hide_instructions()
 	var pg_pts = set_panel.get_polygon_pts() #$SettingsPanel.polygon
-#	var xpanel = clef_x_offset
-#	var y
-#	for i in range(4):
-#		for j in range(2):
-#			pg_pts.append()
 	var sp_x0 = clef_x_offset
 	var sp_x1 = clef_x_offset + clef.get_width()*clef_scale # TODO: offset by clef width
 	var sp_y0 = clef_y_offset + clef.get_height()*clef_scale # TODO: offset by clef height
@@ -259,71 +205,12 @@ func _ready():
 		pg_pts[3][1] = sp_y0
 		print('pg_pts = ', pg_pts)
 		set_panel.set_polygon_pts(pg_pts) #$SettingsPanel.polygon = pg_pts
-#	$CanvasLayer.add_child(settings_panel)
-#	$SettingsPanel.add_child(settingsbox)
-#	settings_panel.add_child(settingsbox)
 
 	set_panel.add_setting(clef_bg) #$SettingsPanel.add_child(clef_bg)
-#	var sz = clef_bg.get_scene_size() #clef_bg.get_vbox_size()
-#	var delta = 50
-#	var xdelta = 100
-#	var xn = sp_x0 + xdelta
-#	clef_bg.position.x = xn
-#	clef_bg.position.y = delta #sp_y0 + delta
-##	settingsbox.add_spacer(true)
-##	settingsbox.add_spacer(true)
 	set_panel.add_setting(region_bg) #$SettingsPanel.add_child(region_bg)
-#	xn = sz.x + xn + xdelta
-#	region_bg.position.x = xn
-#	region_bg.position.y = delta #sp_y0 + delta
-#	sz = region_bg.get_scene_size() #get_vbox_size()
-##	$SettingsPanel.add_spacer(true)
 	set_panel.add_setting(note_bg) #$SettingsPanel.add_child(note_bg)
-#	note_bg.position.x = xn + sz.x + xdelta
-#	note_bg.position.y = delta #sp_y0 + delta
-	
 	add_child(set_panel)
 
-	# get the vbox size, to help position the panel
-#	var vbox_size = settingsbox.rect_size
-#	settings_panel.rect_position = Vector2(clef_x_offset,clef_y_offset+clef.get_height()*clef_scale)
-#	vbox.position = Vector2(20,100)
-#	# add the start-stop game button
-#	play_game_button = Button.new()
-#	dynamic_font.font_data = load("res://Fonts/Roboto-Medium.ttf")
-#	play_game_button.set("custom_fonts/font",dynamic_font)
-#	play_game_button.set("custom_colors/font_color",Color(1,1,1))
-#	play_game_button.get("custom_fonts/font").set_size(fontsz+5)
-##	play_game_button.text = 'Play'
-	var lbl_dx = 10
-	var lbl_y = player.position.y
-#	pg_label = add_label('Play\nGame',Vector2(lbl_dx,0),fontsz,Color(1,1,1),play_game_button)
-#	pg_label.align = Label.ALIGN_CENTER
-#	add_child(play_game_button)
-#	var but_size = play_game_button.get_size() #rect_size.x # = (Vector2(but_width,20))
-#	var pg_size = pg_label.rect_size
-##	play_game_button.rect_position = (Vector2(x_1stplayer/2-but_size.x/1.2,lbl_y+but_size.y))
-#	play_game_button.set_size(pg_size+Vector2(2*lbl_dx,0))
-#	but_size = play_game_button.get_size()
-#	#lbl_y -= pg_size.y/2 # place higher on screen
-##	play_game_button.rect_position = (Vector2(x_1stplayer/2-pg_size.x,lbl_y))
-#	play_game_button.rect_position = (Vector2(ProjectSettings.get_setting("display/window/size/width") - but_size.x - 20,20))
-#	# connect the button mouse pressed signal to a callback function
-#	play_game_button.connect("pressed", self, 'play_stop')
-	
-	# add the score label
-	var lbl_x = player.position.x + player.get_sprite_size().x*player.scale.x/2
-	var rt_margin = 20
-#	lbl_y = lbl_y - player.get_sprite_size().y*player.scale.y/2
-#	var lbl_s = add_label('Score:',Vector2(lbl_x+lbl_dx,lbl_y),fontsz-10,Color(1,1,1))
-#	lbl_s.rect_size.x = ProjectSettings.get_setting("display/window/size/width")-lbl_x-lbl_dx-rt_margin
-#	lbl_s.align = Label.ALIGN_RIGHT
-#	lbl_score = add_label('0',Vector2(lbl_x+lbl_dx,lbl_y + fontsz + 10),fontsz+5,Color(1,1,1))
-#	lbl_score.rect_size.x = ProjectSettings.get_setting("display/window/size/width")-lbl_x-lbl_dx-rt_margin
-#	lbl_score.align = Label.ALIGN_RIGHT
-#	lbl_score2.set_align(Label.ALIGN_RIGHT)
-
-	
 	# add notes to the bottom of the page to show how many lives remain
 	var numlives = 14
 	var life
@@ -342,7 +229,11 @@ func _ready():
 		lifex += dxlife
 	# set the initial spacing between subsequent notes
 	set_note_offset()
-	clef.show_sel_notes(note_option_sel,region_option_sel)
+	# load the default settings into memory
+	change_notes(region_bg)
+	change_notes(note_bg)
+	change_clef(clef_bg)
+#	clef.show_sel_notes(note_option_sel,region_option_sel)
 	clef.hide_sel_notes()
 #	# begin the game
 #	level1()
@@ -748,7 +639,7 @@ func add_button(butgrp,txt,sz):
 		var exp_icons = false
 		but.expand_icon = exp_icons #false #true
 		but.align = HALIGN_LEFT
-		but.icon = unsel_texture
+		but.icon = Textures.unsel_texture
 		but.toggle_mode = true
 	#	but_high.pressed = false
 	but.connect("pressed",self,'change_notes',[butgrp])

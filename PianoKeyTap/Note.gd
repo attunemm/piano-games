@@ -10,13 +10,6 @@ var accidental = 'natural' # can be 'natural', 'sharp', or 'flat'
 var velocity = Vector2(0,0) # start with no velocity
 var idx # assign an integer to keep track of which note this is, if selecting notes from an array of options in another scene
 var mod_color = Color(0.8, 0.1, 0.3)
-var A_rgb = Color8(7,129,230)
-var B_rgb = Color8(110,25,110) #Color8(75,25,75)
-var C_rgb = Color8(250,64,2)
-var D_rgb = Color8(1,161,40)
-var E_rgb = Color8(20,50,140)
-var F_rgb = Color8(220,55,95)
-var G_rgb = Color8(220,210,75)
 var no_mod_color = Color(0,0,0,1) # black
 
 # Called when the node enters the scene tree for the first time.
@@ -52,19 +45,19 @@ func show_ledger_lines(ledger_lines):
 func set_name(nname):
 	notename = nname
 	if nname.begins_with('A'):
-		mod_color = A_rgb
+		mod_color = Constants.A_rgb
 	elif nname.begins_with('B'):
-		mod_color = B_rgb
+		mod_color = Constants.B_rgb
 	elif nname.begins_with('C'):
-		mod_color = C_rgb
+		mod_color = Constants.C_rgb
 	elif nname.begins_with('D'):
-		mod_color = D_rgb
+		mod_color = Constants.D_rgb
 	elif nname.begins_with('E'):
-		mod_color = E_rgb
+		mod_color = Constants.E_rgb
 	elif nname.begins_with('F'):
-		mod_color = F_rgb
+		mod_color = Constants.F_rgb
 	elif nname.begins_with('G'):
-		mod_color = G_rgb
+		mod_color = Constants.G_rgb
 		
 #	$HighlightedNote.texture = load("res://Icons/WholeNote" + nname + ".png")
 	

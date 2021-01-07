@@ -6,9 +6,7 @@ signal selection_changed
 # var a = 2
 # var b = "text"
 var bbox # box to hold the group of buttons
-var sel_texture = load('res://Icons/HatWhiteFilled.svg')
-var unsel_texture = load('res://Icons/HatWhiteUnfilled.svg')
-var icon_texture = sel_texture
+var icon_texture = Textures.sel_texture
 var sprite_sel
 var sprite_unsel
 var label_size
@@ -16,16 +14,16 @@ var h = 168.0/255.0
 var s = 90.0/255.0
 var v1 = 82.0/255.0
 var v2 = 58.0/255.0
-var r = 20.0/255.0
-var g = 209.0/255.0
-var b = 172.0/255.0
+var r = 20
+var g = 209
+var b = 172
 var sel_text
 var butgrp = ButtonGroup.new()
 #var color_sel = Color.from_hsv(h, s, v1, 1.0)  # (h,s,v,a)
 #var color_unsel =  Color.from_hsv(h, s, v2, 1.0) 
-var color_unsel = Color(r,g,b,0.5)
-var color_sel = Color(r,g,b,1)
-var color_icon = Color(r,g,b,0)
+var color_unsel = Color8(r,g,b,127) #0.5)
+var color_sel = Color8(r,g,b,255)
+var color_icon = Color8(r,g,b,0)
 var scene_size = 0.0
 
 # Called when the node enters the scene tree for the first time.
@@ -38,12 +36,12 @@ func sel_changed():
 	for but in butgrp.get_buttons():
 		if but.pressed:
 #			but.pressed = false
-			but.icon = sel_texture
+			but.icon = Textures.sel_texture
 			but.modulate = color_sel
 			sel_text = but.text
 		else:
 			but.pressed = false
-			but.icon = unsel_texture
+			but.icon = Textures.unsel_texture
 			but.modulate = color_unsel
 	emit_signal("selection_changed")
 		
@@ -76,7 +74,7 @@ func init(lbl,txt,sz,seloption):
 		but.align = Label.ALIGN_LEFT
 		but.pressed = false
 #		but.expand_icon = true
-		but.icon = unsel_texture
+		but.icon = Textures.unsel_texture
 		but.modulate = color_unsel
 		but.connect('pressed',self,'sel_changed')
 		if t == seloption: #t.nocasecmp_to(seloption) == 0: # t == seloption:

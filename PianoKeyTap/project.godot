@@ -20,6 +20,11 @@ config/description="Select the correct key before the player falls out of view."
 run/main_scene="res://MainMenu.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Constants="*res://utils/constants.gd"
+Textures="*res://utils/textures.gd"
+
 [display]
 
 window/size/width=1920
