@@ -13,6 +13,14 @@ var scale_factor = 2 # to account for larger window in pixels than original desi
 var notename = ''
 # if 0.5, will "collide" before any part of the sprites connect; make smaller
 var coll_factor = 0.5 # 0.5 covers the entire sprite area; increase to cover more; decrease to cover less 0.33
+# control the dance movement
+var dance_rate = 6 # larger number moves slower
+var dance_angle = 40 # larger number lowers total rotation pi/dance_angle limits the movement
+var dance_disp = 0 # pixels to move in x dir
+var max_disp = 8 # max pixels to move before moving back
+# control player movement after being hit
+var spin_rate = 4 # larger number spins faster
+var pi = 3.14159
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -28,14 +36,8 @@ func _ready():
 	#velocity.x = 20
 #	pass # Replace with function body.
 
-func _physics_process(delta):
-	#velocity.y += gravity * delta
-	#get_input()
-#	velocity = move_and_slide(velocity, Vector2(0, -1))
-#	move_and_slide(velocity,Vector2(0, -1))
-#	print('velocity = ', velocity)
-	var spin_rate = 4 # larger number spins faster
-	var pi = 3.14159
+func _physics_process(delta): # commenting out to try _process
+#func _process(delta):
 	var collision = move_and_collide(velocity * delta) # multiply by delta for move_and_collide, not move_and_slide
 	if collision:
 		if state == 'incorrect':
@@ -52,10 +54,6 @@ func _physics_process(delta):
 	
 	else:
 		
-		var dance_rate = 6 # larger number moves slower
-		var dance_angle = 40 # larger number lowers total rotation pi/dance_angle limits the movement
-		var dance_disp = 0 # pixels to move in x dir
-		var max_disp = 8 # max pixels to move before moving back
 		
 		if state == 'dance_right':
 			position.x -= dance_disp
@@ -92,7 +90,12 @@ func hit():
 #func _process(delta):
 #	position += direction
 #
+func upside_down():
+	$Sprite.flip_v = true
 
+func right_side_up():
+	$Sprite.flip_v = false
+	
 func get_sprite_size():
 	var unscaled_size = $Sprite.texture.get_size()
 	var scale_factors = $Sprite.get_scale()
@@ -209,10 +212,6 @@ func show_label(txt):
 	$Label.set_text(txt)
 	$Label.set_visible(true)
 	$Label.set_percent_visible(1)
-#	for i in range(48):
-#		$Label.set_percent_visible(i/100)
-#		$Label.Font.set_size(i+1)
-	
 	
 func hide_label():
 	$Label.set_percent_visible(0)

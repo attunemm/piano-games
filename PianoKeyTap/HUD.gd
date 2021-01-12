@@ -35,6 +35,9 @@ func display_instructions(instructions):
 	$InstructionsLabel.text = instructions
 	$InstructionsLabel.visible = true
 	
+func show_instructions():
+	$InstructionsLabel.visible = true
+	
 func hide_instructions():
 	$InstructionsLabel.visible = false
 		
@@ -90,7 +93,17 @@ func show():
 
 func update_score(value):
 	$ScoreBox/Score.text = str(value)
+	
+func align_instr(atype):
+	if atype == "bottom":
+		$InstructionsLabel.valign = VALIGN_BOTTOM
+		
+func show_play_hint():
+	$PlayHint.visible = true
 
+func hide_play_hint():
+	$PlayHint.visible = false
+	
 func start_stop_switch():
 	if $PlayButton.texture_normal == start_texture: #$ScoreBox/VBoxContainer/StartButton.text == 'Start':
 #		$ScoreBox/VBoxContainer/StartButton.text == 'Stop'

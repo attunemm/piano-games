@@ -77,6 +77,7 @@ var hud # instance of the HUD scene
 #var unsel_texture = load('res://Icons/HatWhiteUnfilled.png')
 var note_option_sel # string to track which option is selected
 var region_option_sel # string to track which option is selected
+var played_before = false
 
 
 # Called when the node enters the scene tree for the first time.
@@ -130,6 +131,7 @@ func _ready():
 	
 #	lbl_instructions = add_label('Select the correct player before the note slides off the staff.',Vector2(clef_x_offset,50),50)
 	hud.display_instructions('Select the correct player before the note reaches the clef mark.')
+	hud.hide_instructions()
 	var fontsz = 50
 	lbl0 = add_label('0%',Vector2(x0*clef_scale + clef_x_offset,clef_y_offset - fontsz),fontsz)
 	lbl50 = add_label('50%',Vector2(x50*clef_scale + clef_x_offset,clef_y_offset - fontsz),fontsz)
@@ -237,6 +239,8 @@ func _ready():
 	clef.hide_sel_notes()
 #	# begin the game
 #	level1()
+	# hide the players
+	hide_players()
 	
 func change_clef(bgrp):
 	if bgrp.sel_text == 'Treble': #but_treble.pressed:
@@ -266,10 +270,6 @@ func play_stop():
 	if playing:
 		end_game()
 	else:
-		playing = true
-#		pg_label.text = 'Stop\nGame'
-		# hide the settings
-		show_hide_settings()
 		level1()
 	
 # these are in show_hide_settings
@@ -335,7 +335,7 @@ func reset_lives():
 		l.modulate = Color(1,1,1,1)
 		
 func level1():
-	if playing:
+	if true: #playing:
 		# reset the note velocity
 		notes_velocity = notes_velocity0
 		
@@ -347,11 +347,30 @@ func level1():
 		
 		# clear out previous results
 		clear_results()
+		# show the players
+		show_players()
 		
-		# hide settings
+		# hide the settings
+		show_hide_settings()	
+		hud.hide_play_hint()
 		set_panel.hide_settings()
 		set_panel.hide_instructions()
-		
+
+		# Display the game instructions
+		# only do this on first time playing
+		if !played_before:
+			# show instructions for 4 seconds
+			$HUD.show_instructions()
+			yield(get_tree().create_timer(1), "timeout")
+			$HUD.show_message('3')
+			yield(get_tree().create_timer(1), "timeout")
+			$HUD.show_message('2')
+			yield(get_tree().create_timer(1), "timeout")
+			$HUD.show_message('1')
+			yield(get_tree().create_timer(1), "timeout")
+			played_before = true
+		$HUD.hide_instructions()
+			
 		# randomly show a player - this is repeated code from Main.gd - should move elsewhere
 		randomize() # reseed random number generator
 	#	var min_speed = 2
@@ -360,8 +379,11 @@ func level1():
 #		var x = 0
 		sel_note_idx = -1 # increment this to keep track of which note is selected
 		# add note and set it as the selected note (the one for the user to match the player to)
+		# start playing
+		playing = true
 		add_note()
 		sel_next_note()
+		
 	
 
 func note_reached_end(note_handle):
@@ -392,19 +414,20 @@ func end_game():
 	playing = false
 	# change the stop button to play
 	hud.stop()
-#	pg_label.text = 'Play\nGame'
-	
+
 	# delete notes, reset players, stop all note creation
 	reset_players()
+	hide_players()
 	for n in notes_array:
 		n.queue_free()
 	notes_array.clear()
 	
 	# display game over / hide clef
 	clef.visible = false
-	var go_label = add_label('Game Over', Vector2(430,300),200, Color(0,0,1))
+	var go_label = add_label('Game Over', Vector2(500,300),200, Color8(20,210,170))
 	yield(get_tree().create_timer(2), "timeout")
 	go_label.queue_free()
+	set_panel.show_instructions()
 	# show clef
 	clef.visible = true
 	# show statistics
@@ -559,8 +582,18 @@ func reset_players():
 	# reset all players to not be grayed out
 	for p in players:
 		p.modulate = Color(1,1,1,1)
+		p.right_side_up()
 	
-	
+func hide_players():
+	# reset all players to not be grayed out
+	for p in players:
+		p.visible = false
+
+func show_players():
+	# reset all players to not be grayed out
+	for p in players:
+		p.visible = true
+		
 func set_note_offset():
 		x_to_add_new_note = (clef.position.x + clef.get_width()*perc_offset_add_note*clef.scale.x - notes_velocity) # make the space between notes larger as notes_velocity increases
 	
@@ -577,6 +610,8 @@ func incorrect_pairing():
 #	print('incorrect')
 	# gray out the player
 	sel_player.modulate = Color(1,1,1,.5)
+	# turn him upside down
+	sel_player.upside_down()
 	num_pts -= 2
 	# set first_try to false, since the user can't get this correct on the first try any more
 	if first_try:

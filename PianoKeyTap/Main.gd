@@ -40,6 +40,7 @@ var margin_factor = 4 # half this number is the # of sprite widths to leave as m
 var xrange # pixels to place the falling players in the x-dimension
 var x0 # offset from left edge for placing falling players in the x-dimension
 var player_height # force players to be the same height
+var played_before = false
 
 #var can_select_key = true # controls whether the user can select a key (one key at a time)
 #var sel_key = ''
@@ -78,6 +79,8 @@ func _ready():
 		inset = ''#(adjust settings below)'
 #		$HUD.show_settings()
 	$HUD.display_instructions(instructions) # % inset)
+	$HUD.align_instr('bottom') # move the text down a bit
+	$HUD.hide_instructions()
 	
 	# connect to the signal emitted by the start button
 	$HUD.connect('start_stop',self,'start_game')
@@ -184,11 +187,12 @@ func stop_game():
 	
 	# display game over / hide clef
 	octave.visible = false
-	var go_label = add_label('Game Over', Vector2(430,300),200, Color(0,0,1))
+	var go_label = add_label('Game Over', Vector2(500,300),200, Color8(20,210,170))
 	yield(get_tree().create_timer(2), "timeout")
 	go_label.queue_free()
 	# show clef
 	octave.visible = true
+	set_panel.show_instructions()
 	
 func add_label(txt,pos,sz,clr = Color(1,1,1),par=self):
 	
@@ -203,18 +207,36 @@ func add_label(txt,pos,sz,clr = Color(1,1,1),par=self):
 	label0.rect_position.y = pos.y
 	par.add_child(label0)
 	return label0
+	
 func start_game():
 	set_panel.hide_instructions()
+
 	if is_running:
 		# user hit "Stop"
 		stop_game()
 		octave.highlight_when_play(true)
 #		
 	else:
-		player.visible = true
-		defender.visible = true
+		$HUD.hide_play_hint()
 		# hide the settings panel
 		hide_settings()
+		# show instructions for 2 seconds
+		# only do this on first time playing
+		if !played_before:
+			$HUD.show_instructions()
+			# show instructions for 4 seconds
+			yield(get_tree().create_timer(1), "timeout")
+			$HUD.show_message('3')
+			yield(get_tree().create_timer(1), "timeout")
+			$HUD.show_message('2')
+			yield(get_tree().create_timer(1), "timeout")
+			$HUD.show_message('1')
+			yield(get_tree().create_timer(1), "timeout")
+			played_before = true
+		$HUD.hide_instructions()
+		player.visible = true
+		defender.visible = true
+
 		octave.highlight_when_play(false)
 		# hide the instructions
 		$HUD/InstructionsLabel.visible = false
