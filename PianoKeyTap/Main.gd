@@ -28,7 +28,12 @@ var white_notes = ['A','B','C','D','E','F','G']
 var sharp_notes = ['A_sharp','B_sharp','C_sharp','D_sharp','E_sharp','F_sharp','G_sharp']
 var flat_notes = ['A_flat','B_flat','C_flat','D_flat','E_flat','F_flat','G_flat']
 var all_notes = white_notes + sharp_notes + flat_notes
-var notes # keep track of the notes currently in use
+var players_CDE = [2,3,4] # indices to the C, D and E notes on the notes arrays above
+var players_FGAB = [0,1,5,6] ## indices to the F, G, A and B notes on the notes arrays above
+var players_all = [0,1,2,3,4,5,6] # indices to all 7 notes
+var players_sel = players_all # default to all players
+var nplayers = 7 # total number of possible players, for use in mod fn
+var notes = white_notes + []# keep track of the notes currently in use
 var is_running = false
 var speed_up_by = 5 * scale_factor # controls how many pixels to increase the player fall speed by when they select the right key
 var color_mode_sel = 7 # default to seven colors
@@ -93,7 +98,8 @@ func _ready():
 	var og1 = OptionsGrp.instance()
 	og1.init('Notes:',['Natural','Sharp','Flat','All'],50,'Natural')
 	var og2 = OptionsGrp.instance()
-	og2.init('Colors:',['7','2'],50,'7')
+	og2.init('Players:',['C D E','F G A B','All'],50,'All')
+#	og2.init('Colors:',['7','2'],50,'7')
 	var og3 = OptionsGrp.instance()
 	og3.init('Keyboard:',['Fixed','Moving'],50,'Fixed')
 	set_panel.add_setting(og1)
@@ -102,11 +108,11 @@ func _ready():
 	add_child(set_panel)
 	
 	# listen for changed signal
-	og1.connect("selection_changed", self, "change_notes",[og1])
-	og2.connect("selection_changed", self, "change_color",[og2])
+	og1.connect("selection_changed", self, "change_notes",[og1, og2])
+	og2.connect("selection_changed", self, "change_notes",[og1, og2]) # "change_color"
 	og3.connect("selection_changed", self, "change_keyboard",[og3])
-	change_notes(og1)
-	change_color(og2)
+	change_notes(og1, og2)
+#	change_color(og2)
 	change_keyboard(og3)
 	
 	# load the octave
@@ -315,18 +321,6 @@ func level1():
 #			print(cur_offset)
 	
 	yield(get_tree().create_timer(0.01), "timeout")	
-#	var mode_sel = $HUD.get_mode_selected()
-#	if mode_sel == 'white':
-#		notes = white_notes
-#	elif mode_sel == 'sharps':
-#		notes = sharp_notes
-#	elif mode_sel == 'flats':
-#		notes = flat_notes
-#	elif mode_sel == 'all':
-#		notes = all_notes
-	
-#	color_mode_sel = $HUD.get_color_mode_selected()
-	
 	var numnotes = notes.size()
 #	print('number of notes: ', numnotes)
 	
@@ -399,22 +393,7 @@ func lose_life():
 #	defender.state = 'unset'
 #	level1()
 	
-func change_notes(butgrp):
-	var mode_sel = butgrp.sel_text #get_mode_selected()
-	if mode_sel == 'Natural':
-		notes = white_notes
-	elif mode_sel == 'Sharp':
-		notes = sharp_notes
-	elif mode_sel == 'Flat':
-		notes = flat_notes
-	elif mode_sel == 'All':
-		notes = all_notes
-	
-#	color_mode_sel = $HUD.get_color_mode_selected()
-#
-#	var numnotes = notes.size()
-#	print('number of notes: ', numnotes)
-	
+
 
 #func _input(event):
 func compare_key_to_player():
@@ -571,3 +550,44 @@ func change_color(butgrp):
 		color_mode_sel = 7
 	else:
 		color_mode_sel = 2
+
+func change_players(butgrp):
+	if butgrp.sel_text == 'All':
+		players_sel = players_all
+	elif butgrp.sel_text == 'C D E':
+		players_sel = players_CDE
+	elif butgrp.sel_text == 'F G A B':
+		players_sel = players_FGAB
+
+func change_notes(butgrp_notes, butgrp_players):
+	var mode_sel = butgrp_notes.sel_text #get_mode_selected()
+	if butgrp_players.sel_text == 'All':
+		players_sel = players_all
+	elif butgrp_players.sel_text == 'C D E':
+		players_sel = players_CDE
+	elif butgrp_players.sel_text == 'F G A B':
+		players_sel = players_FGAB
+	notes.clear()
+	if mode_sel == 'Natural':
+		for pid in players_sel:
+			notes.append(white_notes[pid])
+	elif mode_sel == 'Sharp':
+		for pid in players_sel:
+			notes.append(sharp_notes[pid])
+#		notes = sharp_notes[players_sel]
+	elif mode_sel == 'Flat':
+		for pid in players_sel:
+			notes.append(flat_notes[pid])
+#		notes = flat_notes[players_sel]
+	elif mode_sel == 'All':
+		for pid in players_sel:
+			notes.append(white_notes[pid])
+			notes.append(sharp_notes[pid])
+			notes.append(flat_notes[pid])
+#		notes = white_notes[players_sel] + sharp_notes[players_sel] + flat_notes[players_sel] #all_notes
+	
+#	color_mode_sel = $HUD.get_color_mode_selected()
+#
+#	var numnotes = notes.size()
+#	print('number of notes: ', numnotes)
+	
