@@ -17,6 +17,7 @@ func _input_event(object, event, idx):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#connect("clicked", self, "handle_click")
+#	init('A') # uncomment to view the shape of a given note
 	pass # Replace with function body.
 
 func handle_click( event):
@@ -27,31 +28,35 @@ func init(notename):
 	# set the note parameter
 	note = notename
 	
-	var yperc = 0.67
+	var yperc = 0.67 # % of vertical dimension that the black key overlaps
 	var xpercL = 0
 	var xpercR = 0
 	# set the collision object shape based on the note
+	# the decimals are the exact fit percentages; 
+	# use this constant > 0 to give the black key more clickable area
+	# THESE CONSTANTS DON'T SEEM TO CHANGE THE SHAPE?
+	var perc_decrease = 0.01
 	if notename == 'A':
-		xpercL = 0.28
-		xpercR = 0.17
+		xpercL = 0.29 + perc_decrease
+		xpercR = 0.21 + perc_decrease
 	elif notename == 'B':
-		xpercL = 0.38
-		xpercR = 0.01
+		xpercL = 0.38 + perc_decrease
+		xpercR = 0.01 + perc_decrease
 	elif notename == 'C':
-		xpercL = 0.01
-		xpercR = 0.37
+		xpercL = 0.01 + perc_decrease
+		xpercR = 0.37 + perc_decrease
 	elif notename == 'D':
-		xpercL = 0.2
-		xpercR = 0.2
+		xpercL = 0.22 + perc_decrease
+		xpercR = 0.22 + perc_decrease
 	elif notename == 'E':
-		xpercL = 0.37
-		xpercR = 0.01
+		xpercL = 0.37 + perc_decrease
+		xpercR = 0.01 + perc_decrease
 	elif notename == 'F':
-		xpercL = 0.01
-		xpercR = 0.41
+		xpercL = 0.01 + perc_decrease
+		xpercR = 0.55 + perc_decrease
 	elif notename == 'G':
-		xpercL = 0.2
-		xpercR = 0.28
+		xpercL = 0.22 + perc_decrease
+		xpercR = 0.28 + perc_decrease
 	
 	var keyshape = $WhiteKeyRect.polygon
 	print('keyshape: ', keyshape)

@@ -2,6 +2,7 @@ extends CanvasLayer
 
 signal start_stop
 signal go_back
+signal help_selected
 
 # Declare member variables here. 
 var life_size_y = 120 #pixels
@@ -21,6 +22,9 @@ func _ready():
 	adjust_lives_sizes($LivesBox/Life7)
 	$PlayButton.connect("button_up",self,"start_stop_switch")
 	$BackButton.connect("button_up",self,"back_arrow")
+	$HelpButton.connect("button_up",self,"help")
+	$HelpButton.connect("button_up",self,"show_hide_help")
+	$HelpPanel/CloseHelpPanel.connect("button_up",self,"show_hide_help")
 	
 func adjust_lives_sizes(life_sprite):
 	var lt = life_sprite.texture
@@ -108,9 +112,11 @@ func start_stop_switch():
 	if $PlayButton.texture_normal == start_texture: #$ScoreBox/VBoxContainer/StartButton.text == 'Start':
 #		$ScoreBox/VBoxContainer/StartButton.text == 'Stop'
 		$PlayButton.texture_normal = stop_texture
+		hide_while_playing()
 	elif $PlayButton.texture_normal == stop_texture: #$ScoreBox/VBoxContainer/StartButton.text == 'Stop':
 #		$ScoreBox/VBoxContainer/StartButton.text == 'Start'
 		$PlayButton.texture_normal = start_texture
+		show_while_not_playing()
 	emit_signal("start_stop")
 	
 func stop():
@@ -119,3 +125,40 @@ func stop():
 func back_arrow():
 	get_tree().change_scene("res://MainMenu.tscn")
 	emit_signal('go_back')
+
+func help():
+	emit_signal("help_selected")
+
+func hide_while_playing():
+	# hide everything the user shouldn't see when the game is running
+	var tf = false
+	$HelpPanel.visible = false
+	show_hide(tf)
+	
+func show_while_not_playing():
+	# show everything the user shouldn't see when the game is running
+	var tf = true
+	show_hide(tf)
+
+func show_hide(tf):
+	$CopyrightLabel.visible = tf
+	$BackButton.visible = tf
+	$HelpButton.visible = tf
+#	$InstructionsLabel.visible = tf
+#	$PlayHint.visible = tf
+#	$Message.visible = tf
+#	$StreakLabel.visible = tf
+#	$InfoButton.visible = tf
+
+func show_hide_help():
+	if $HelpPanel.visible == true:
+		hide_help()
+#		$HelpPanel.visible = false
+#		octave.visible = true
+	else:
+		$HelpPanel.visible = true
+#		octave.visible = false
+		
+func hide_help():
+	$HelpPanel.visible = false
+#	octave.visible = true

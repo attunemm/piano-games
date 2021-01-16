@@ -10,5 +10,5 @@ script = ExtResource( 2 )
 color = Color( 0, 0, 0, 1 )
 polygon = PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0 )
 
-[node name="KeyCollision" parent="." index="2"]
+[node name="KeyCollision" parent="." index="3"]
 polygon = PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0 )

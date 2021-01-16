@@ -1,8 +1,8 @@
 extends Polygon2D
 signal key_selected()
 
-var screenHeight = ProjectSettings.get_setting("display/window/size/height")
-var scale_factor = screenHeight/504 #01 # 1 for 896x504 just adjust the scale of the object
+#var screenHeight = ProjectSettings.get_setting("display/window/size/height")
+var scale_factor = Constants.screenHeight/504 #01 # 1 for 896x504 just adjust the scale of the object
 const NOTES = ['C','D','E','F','G','A','B']
 #const BLK_OFFSETS = [70, 194, 400, 518, 635]
 const BLK_OFFSETS = [70, 124, 206, 118, 117] 

@@ -33,26 +33,26 @@ func set_collision_shape():
 	var xpercR = 0
 	# set the collision object shape based on the note
 	if note == 'A':
-		xpercL = 0.28
-		xpercR = 0.17
+		xpercL = 0.31
+		xpercR = 0.22
 	elif note == 'B':
-		xpercL = 0.38
+		xpercL = 0.39
 		xpercR = 0.01
 	elif note == 'C':
 		xpercL = 0.01
 		xpercR = 0.37
 	elif note == 'D':
-		xpercL = 0.2
-		xpercR = 0.2
+		xpercL = 0.24
+		xpercR = 0.23
 	elif note == 'E':
-		xpercL = 0.37
+		xpercL = 0.38
 		xpercR = 0.01
 	elif note == 'F':
 		xpercL = 0.01
-		xpercR = 0.41
+		xpercR = 0.38 #0.41
 	elif note == 'G':
-		xpercL = 0.2
-		xpercR = 0.28
+		xpercL = 0.24
+		xpercR = 0.29
 	
 	# var keyshape = $WhiteKeyRect.polygon
 	# print('keyshape: ', keyshape)

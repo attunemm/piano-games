@@ -13,6 +13,14 @@ var E_rgb = Color8(20,50,140)
 var F_rgb = Color8(220,55,95)
 var G_rgb = Color8(220,210,75)
 
+# screen size in pixels
+var screenWidth = ProjectSettings.get_setting("display/window/size/width")
+var screenHeight = ProjectSettings.get_setting("display/window/size/height")
+
+# colors for text label
+var lblColorBright = Color8(20,210,170)
+var lblColorDim = Color8(15,150,120)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.

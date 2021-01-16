@@ -24,6 +24,7 @@ config/icon="res://icon.png"
 
 Constants="*res://utils/constants.gd"
 Textures="*res://utils/textures.gd"
+GlobalFunctions="*res://utils/global_functions.gd"
 
 [display]
 

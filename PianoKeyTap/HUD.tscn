@@ -1,10 +1,13 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Fonts/Roboto-Medium.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://HUD.gd" type="Script" id=2]
+[ext_resource path="res://Icons/HelpWhiteSquare.png" type="Texture" id=3]
 [ext_resource path="res://Sprites/A.png" type="Texture" id=4]
 [ext_resource path="res://Icons/BackWhiteSquare.png" type="Texture" id=5]
 [ext_resource path="res://Icons/PlayWhiteSquare.png" type="Texture" id=6]
+[ext_resource path="res://Icons/InfoWhiteSquare.png" type="Texture" id=7]
+[ext_resource path="res://Icons/CloseWhite.svg" type="Texture" id=8]
 
 [sub_resource type="DynamicFontData" id=1]
 resource_local_to_scene = true
@@ -225,14 +228,15 @@ __meta__ = {
 }
 
 [node name="CopyrightLabel" type="Label" parent="."]
+visible = false
 anchor_bottom = 1.0
-margin_left = 40.0
+margin_left = 630.0
 margin_top = 1040.0
 margin_right = 672.0
 margin_bottom = -2.0
 custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.705882, 0.705882, 0.705882, 1 )
-text = "Copyright 2020 Attune Music and Math, LLC"
+text = "Copyright 2021 Attune Music and Math, LLC"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -242,7 +246,7 @@ anchor_top = 0.94
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 450.0
-margin_right = 4.00006
+margin_right = 4.0
 mouse_filter = 1
 __meta__ = {
 "_edit_use_anchors_": false
@@ -255,47 +259,68 @@ scale = Vector2( 0.08, 0.08 )
 texture = ExtResource( 4 )
 
 [node name="Life" type="Sprite" parent="LivesBox"]
-position = Vector2( 943, -5 )
+position = Vector2( 945, -5 )
 scale = Vector2( 0.16, 0.16 )
 texture = SubResource( 11 )
 
 [node name="Life2" type="Sprite" parent="LivesBox"]
-position = Vector2( 1025, -5 )
+position = Vector2( 1027, -5 )
 scale = Vector2( 0.16, 0.16 )
 texture = SubResource( 12 )
 
 [node name="Life3" type="Sprite" parent="LivesBox"]
-position = Vector2( 1101, -5 )
+position = Vector2( 1103, -5 )
 scale = Vector2( 0.16, 0.16 )
 texture = SubResource( 13 )
 
 [node name="Life4" type="Sprite" parent="LivesBox"]
-position = Vector2( 1170, -5 )
+position = Vector2( 1172, -5 )
 scale = Vector2( 0.16, 0.16 )
 texture = SubResource( 14 )
 
 [node name="Life5" type="Sprite" parent="LivesBox"]
-position = Vector2( 1245, -5 )
+position = Vector2( 1247, -5 )
 scale = Vector2( 0.16, 0.16 )
 texture = SubResource( 15 )
 
 [node name="Life6" type="Sprite" parent="LivesBox"]
-position = Vector2( 1317, -5 )
+position = Vector2( 1319, -5 )
 scale = Vector2( 0.16, 0.16 )
 texture = SubResource( 16 )
 
 [node name="Life7" type="Sprite" parent="LivesBox"]
-position = Vector2( 1390, -5 )
+position = Vector2( 1392, -5 )
 scale = Vector2( 0.1, 0.1 )
 texture = SubResource( 17 )
 
+[node name="HelpPanel" type="Panel" parent="."]
+visible = false
+margin_top = 130.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CloseHelpPanel" type="TextureButton" parent="HelpPanel"]
+margin_left = 1840.0
+margin_top = 20.0
+margin_right = 1936.0
+margin_bottom = 116.0
+rect_scale = Vector2( 0.7, 0.7 )
+texture_normal = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="InstructionsLabel" type="Label" parent="."]
+visible = false
 margin_left = 165.0
 margin_top = 13.0
 margin_right = 1760.0
 margin_bottom = 136.0
 custom_fonts/font = SubResource( 18 )
-custom_colors/font_color = Color( 0.0784314, 0.819608, 0.67451, 1 )
+custom_colors/font_color = Color( 0.0588235, 0.580392, 0.47451, 1 )
 text = "Adjust the settings below, then click \"Start\" to begin playing.
 Or, tap the keys to make up your own song."
 align = 1
@@ -305,6 +330,7 @@ __meta__ = {
 }
 
 [node name="PlayHint" type="Label" parent="."]
+visible = false
 margin_left = 1070.0
 margin_top = 37.172
 margin_right = 1833.0
@@ -328,12 +354,35 @@ __meta__ = {
 }
 
 [node name="BackButton" type="TextureButton" parent="."]
-margin_left = 25.0
-margin_top = 25.0
-margin_right = 139.0
-margin_bottom = 175.0
-rect_scale = Vector2( 0.8, 0.8 )
+margin_left = 20.7573
+margin_top = 981.009
+margin_right = 134.757
+margin_bottom = 1131.01
+rect_scale = Vector2( 0.7, 0.7 )
 texture_normal = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HelpButton" type="TextureButton" parent="."]
+margin_left = 113.983
+margin_top = 982.958
+margin_right = 227.983
+margin_bottom = 1132.96
+rect_scale = Vector2( 0.7, 0.7 )
+texture_normal = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InfoButton" type="TextureButton" parent="."]
+visible = false
+margin_left = 199.321
+margin_top = 962.514
+margin_right = 342.321
+margin_bottom = 1155.51
+rect_scale = Vector2( 0.7, 0.7 )
+texture_normal = ExtResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

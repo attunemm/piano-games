@@ -78,6 +78,7 @@ var hud # instance of the HUD scene
 var note_option_sel # string to track which option is selected
 var region_option_sel # string to track which option is selected
 var played_before = false
+var one_note_at_a_time = true # limit to one note displayed; affects set_note_offset
 
 
 # Called when the node enters the scene tree for the first time.
@@ -94,6 +95,37 @@ func _ready():
 #	$ExpandCollapse.connect("pressed", self, 'show_hide_settings')
 #	arrow_rt = load('res://Icons/RightBlack.svg')
 #	arrow_lt = load('res://Icons/LeftBlack.svg')
+	# load the help info
+#	help_panel = SettingsControl.instance()
+	var help_panel = VBoxContainer.new()
+	var question_font = GlobalFunctions.get_dyn_font(50)
+	var answer_font = GlobalFunctions.get_dyn_font(40)
+#	var df = DynamicFont.new()
+#	df.font_data = load('res://Fonts/Roboto-Medium.ttf')
+	var lbl = Label.new()
+	lbl.text = 'How do I play the game?'
+	lbl.set("custom_fonts/font",question_font)
+	lbl.modulate = Color(.9,.9,.9,1) #Constants.lblColorBright
+	help_panel.add_child(lbl)
+	var lbl2 = Label.new()
+	lbl2.text = "   - Press the play arrow in the top right corner.\n   - Before the note reaches the clef mark, select the correct Team Stickey player.\n "
+	lbl2.set("custom_fonts/font",answer_font)
+#	lbl2.modulate = Constants.lblColorDim
+	help_panel.add_child(lbl2)
+	var lbl3 = Label.new()
+	lbl3.text = 'Is there a way to make the game easier or more challenging?'
+	help_panel.add_child(lbl3)
+	lbl3.set("custom_fonts/font",question_font)
+	lbl3.modulate = Color(.9,.9,.9,1) #Constants.lblColorBright
+	var lbl4 = Label.new()
+	lbl4.text = "  Yes! Select the Gear icon in the top left corner to change the settings.\n   - Treble or bass clef.\n   - Staff, leger lines or both.\n   - Lines, spaces or both."
+	lbl4.set("custom_fonts/font",answer_font)
+#	lbl4.modulate = Color(.9,.9,.9,1) #Constants.lblColorDim
+	help_panel.add_child(lbl4)
+	$HUD/HelpPanel.add_child(help_panel)
+	# position the help panel
+	help_panel.rect_position = Vector2(40,40)
+
 	dynamic_font.font_data = load("res://Fonts/Roboto-Medium.ttf")
 	# load the clef
 	clef = Staff.instance()
@@ -103,7 +135,7 @@ func _ready():
 	clef.set_position(Vector2(clef_x_offset,clef_y_offset))
 	clef.set_scale(Vector2(clef_scale,clef_scale))
 	# figure out the new clef width to height ratio to fill the screen
-	clef_new_width = ProjectSettings.get_setting("display/window/size/width") - 2*clef_x_offset
+	clef_new_width = Constants.screenWidth - 2*clef_x_offset
 	var wtoh = clef_new_width / clef.get_height() / clef_scale 
 	print('new width to height = ', wtoh)
 	clef.change_width(wtoh)
@@ -187,12 +219,15 @@ func _ready():
 	set_panel.connect("show_hide", self, 'show_hide_settings')
 	set_panel.set_instructions('Expand settings for clef, leger lines, and more!')
 #	set_panel.hide_instructions()
+	add_child(set_panel)
+	var spht = set_panel.get_height() # 
+	print('height = ', spht)
 	var pg_pts = set_panel.get_polygon_pts() #$SettingsPanel.polygon
 	var sp_x0 = clef_x_offset
 	var sp_x1 = clef_x_offset + clef.get_width()*clef_scale # TODO: offset by clef width
-	var sp_y0 = clef_y_offset + clef.get_height()*clef_scale # TODO: offset by clef height
+	var sp_y0 = clef_y_offset + clef.get_height()*clef_scale # offset by clef height
 	var sp_y1 = sp_y0 + 600
-	set_panel.position.y = sp_y0
+	set_panel.position.y = 0 #Constants.screenHeight - spht - 100 #sp_y0
 	if 0:
 		pg_pts[0][0] = sp_x0
 		pg_pts[0][1] = sp_y0
@@ -216,9 +251,12 @@ func _ready():
 	# add notes to the bottom of the page to show how many lives remain
 	var numlives = 14
 	var life
-	var lifex = clef_x_offset
-	var lifey = ProjectSettings.get_setting("display/window/size/height") - 60
-	var dxlife = clef_new_width / (numlives-1)
+#	var ss = player.get_sprite_size()
+	var x_life_offset = x_1stplayer - 50 #sprite_size.x/2 #+ 100
+	var lifex = x_life_offset #clef_x_offset + x_life_offset
+	var lifey = Constants.screenHeight - 60
+#	var note_sz = 0# estimate note size for centering
+	var dxlife = (clef_new_width - x_life_offset) / (numlives-1) #(Constants.screenWidth - x_life_offset*2  - note_sz) / (numlives-1) #(clef_new_width - x_life_offset) / (numlives-1)
 	var nnotes = notes.size()
 	for n in range(numlives):
 		life = Note.instance()
@@ -229,6 +267,9 @@ func _ready():
 		add_child(life)
 		lives.append(life)
 		lifex += dxlife
+	# hide the lives
+	hide_lives()
+
 	# set the initial spacing between subsequent notes
 	set_note_offset()
 	# load the default settings into memory
@@ -240,7 +281,7 @@ func _ready():
 #	# begin the game
 #	level1()
 	# hide the players
-	hide_players()
+#	hide_players()
 	
 func change_clef(bgrp):
 	if bgrp.sel_text == 'Treble': #but_treble.pressed:
@@ -261,6 +302,14 @@ func add_option(but_group,but_string,is_sel):
 	but_new.pressed = is_sel
 	return but_new
 	
+func hide_lives():
+	for lf in lives:
+		lf.visible = false
+
+func show_lives():
+	for lf in lives:
+		lf.visible = true
+
 func play_stop():
 	# called when user selects the play / stop button
 	# set the playing variable and change the label name
@@ -342,6 +391,9 @@ func level1():
 		# reset the lives
 		reset_lives()
 		
+		# show the lives
+		show_lives()
+		
 		# reset the score
 		update_score(0)
 		
@@ -357,19 +409,19 @@ func level1():
 		set_panel.hide_instructions()
 
 		# Display the game instructions
-		# only do this on first time playing
-		if !played_before:
-			# show instructions for 4 seconds
-			$HUD.show_instructions()
-			yield(get_tree().create_timer(1), "timeout")
-			$HUD.show_message('3')
-			yield(get_tree().create_timer(1), "timeout")
-			$HUD.show_message('2')
-			yield(get_tree().create_timer(1), "timeout")
-			$HUD.show_message('1')
-			yield(get_tree().create_timer(1), "timeout")
-			played_before = true
-		$HUD.hide_instructions()
+#		# only do this on first time playing
+#		if !played_before:
+#			# show instructions for 4 seconds
+#			$HUD.show_instructions()
+#			yield(get_tree().create_timer(1), "timeout")
+#			$HUD.show_message('3')
+#			yield(get_tree().create_timer(1), "timeout")
+#			$HUD.show_message('2')
+#			yield(get_tree().create_timer(1), "timeout")
+#			$HUD.show_message('1')
+#			yield(get_tree().create_timer(1), "timeout")
+#			played_before = true
+#		$HUD.hide_instructions()
 			
 		# randomly show a player - this is repeated code from Main.gd - should move elsewhere
 		randomize() # reseed random number generator
@@ -417,7 +469,7 @@ func end_game():
 
 	# delete notes, reset players, stop all note creation
 	reset_players()
-	hide_players()
+#	hide_players()
 	for n in notes_array:
 		n.queue_free()
 	notes_array.clear()
@@ -427,7 +479,9 @@ func end_game():
 	var go_label = add_label('Game Over', Vector2(500,300),200, Color8(20,210,170))
 	yield(get_tree().create_timer(2), "timeout")
 	go_label.queue_free()
-	set_panel.show_instructions()
+	# hide the lives
+	hide_lives()
+#	set_panel.show_instructions()
 	# show clef
 	clef.visible = true
 	# show statistics
@@ -460,6 +514,8 @@ func end_game():
 			note_inst.highlight()
 			note_inst.disable_collision() # make sure that overlapping notes don't bump each other out of position
 			result_notes.append(note_inst)
+	# display the HUD controls
+	hud.show_while_not_playing()
 	
 func add_note():
 	if playing:
@@ -502,11 +558,7 @@ func sel_next_note():
 	
 	# add to the count of how many times this note was the active note
 	num_of_times[sel_note.idx] += 1
-#		add_note()
-#		sel_note = notes_array[sel_note_idx]
-#	else: # otherwise, create the next note and set as sel_note
-#		add_note()
-		
+
 
 func set_sel_player(player_ref):
 	# called when user clicks on a player
@@ -531,7 +583,7 @@ func set_sel_note(note_ref):
 func compare_selections():
 #	print('in_compare_selections')
 	# see if the selected note matches the selected player
-	if is_instance_valid(sel_note) and is_instance_valid(sel_player) and typeof(sel_note) == TYPE_OBJECT and typeof(sel_player) == TYPE_OBJECT:
+	if playing and is_instance_valid(sel_note) and is_instance_valid(sel_player) and typeof(sel_note) == TYPE_OBJECT and typeof(sel_player) == TYPE_OBJECT:
 #		print(sel_note.notename)
 #		print(sel_player.notename)
 		if sel_note.notename == sel_player.notename:
@@ -595,6 +647,9 @@ func show_players():
 		p.visible = true
 		
 func set_note_offset():
+	if one_note_at_a_time:
+		x_to_add_new_note = -100 # never add new note
+	else:
 		x_to_add_new_note = (clef.position.x + clef.get_width()*perc_offset_add_note*clef.scale.x - notes_velocity) # make the space between notes larger as notes_velocity increases
 	
 func inc_note_speed():

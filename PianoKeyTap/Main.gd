@@ -17,10 +17,8 @@ var defender
 var score = 0
 var streak = 0 # keep track of the # of correct selections in a row
 var score_increment = 10
-var screenWidth = ProjectSettings.get_setting("display/window/size/width")
-var screenHeight = ProjectSettings.get_setting("display/window/size/height")
-var max_x_offset = screenWidth*2/5 # can move up to 6 keys right out of 15 keys displayed at a time
-var scale_factor = screenHeight/504 #2 # original numbers were all based on 896x504 pixel window
+var max_x_offset = Constants.screenWidth*2/5 # can move up to 6 keys right out of 15 keys displayed at a time
+var scale_factor = Constants.screenHeight/504 #2 # original numbers were all based on 896x504 pixel window
 var oct_scale = 0.585 # scale to fit 2 octaves on the screen
 var octave_y_offset = 100 * scale_factor
 var octave_x_offset = 0
@@ -46,6 +44,7 @@ var xrange # pixels to place the falling players in the x-dimension
 var x0 # offset from left edge for placing falling players in the x-dimension
 var player_height # force players to be the same height
 var played_before = false
+var help_panel
 
 #var can_select_key = true # controls whether the user can select a key (one key at a time)
 #var sel_key = ''
@@ -89,21 +88,57 @@ func _ready():
 	
 	# connect to the signal emitted by the start button
 	$HUD.connect('start_stop',self,'start_game')
-
+	# connect the help button
+	$HUD.connect('help_selected',self,'show_hide_help')
+	
+	# load the help info
+#	help_panel = SettingsControl.instance()
+	help_panel = VBoxContainer.new()
+	var question_font = GlobalFunctions.get_dyn_font(50)
+	var answer_font = GlobalFunctions.get_dyn_font(40)
+#	var df = DynamicFont.new()
+#	df.font_data = load('res://Fonts/Roboto-Medium.ttf')
+	var lbl = Label.new()
+	lbl.text = 'How do I play the game?'
+	lbl.set("custom_fonts/font",question_font)
+	lbl.modulate = Color(.9,.9,.9,1) #Constants.lblColorBright
+	help_panel.add_child(lbl)
+	var lbl2 = Label.new()
+	lbl2.text = "   - Press the play arrow in the top right corner.\n   - Before the Team Stickey player falls off the screen, select a key that matches the player's hat.\n "
+	lbl2.set("custom_fonts/font",answer_font)
+#	lbl2.modulate = Constants.lblColorDim
+	help_panel.add_child(lbl2)
+	var lbl3 = Label.new()
+	lbl3.text = 'Is there a way to make the game easier or more challenging?'
+	help_panel.add_child(lbl3)
+	lbl3.set("custom_fonts/font",question_font)
+	lbl3.modulate = Color(.9,.9,.9,1) #Constants.lblColorBright
+	var lbl4 = Label.new()
+	lbl4.text = "  Yes! Select the Gear icon in the top left corner to change the settings.\n   - Play with 3 or 4 notes instead of 7.\n   - Focus on 1 type of note (natural, sharp, or flat), or play with all types.\n   - Looking for a challenge? Set the keyboard to moving."
+	lbl4.set("custom_fonts/font",answer_font)
+#	lbl4.modulate = Color(.9,.9,.9,1) #Constants.lblColorDim
+	help_panel.add_child(lbl4)
+	$HUD/HelpPanel.add_child(help_panel)
+	# position the help panel
+	help_panel.rect_position = Vector2(40,40)
+#	help_panel.visible = false
+	
+	
+	
 	# load the settings
 	set_panel = SettingsControl.instance()
 	# change the label
 	set_panel.set_instructions('Expand settings for sharps, flats, and more!')
 	# create the settings groups
 	var og1 = OptionsGrp.instance()
-	og1.init('Notes:',['Natural','Sharp','Flat','All'],50,'Natural')
+	og1.init('Note Type:',['Natural','Sharp','Flat','All'],50,'Natural')
 	var og2 = OptionsGrp.instance()
-	og2.init('Players:',['C D E','F G A B','All'],50,'All')
+	og2.init('Notes:',['C D E','F G A B','All'],50,'All')
 #	og2.init('Colors:',['7','2'],50,'7')
 	var og3 = OptionsGrp.instance()
 	og3.init('Keyboard:',['Fixed','Moving'],50,'Fixed')
-	set_panel.add_setting(og1)
 	set_panel.add_setting(og2)
+	set_panel.add_setting(og1)
 	set_panel.add_setting(og3)
 	add_child(set_panel)
 	
@@ -130,7 +165,7 @@ func _ready():
 	var oct_pixels = octave.get_pixels()
 	
 	#locate the settings panel based on the size of the octave
-	set_panel.position.y = screenHeight - set_panel.get_height() #oct_pixels.y
+	set_panel.position.y = 0 #Constants.screenHeight - set_panel.get_height() - 100 #oct_pixels.y
 	
 	# set the size of the players to be 1/4 as tall as the white key
 	player_height = oct_pixels[1]/2 * oct_scale * scale_factor
@@ -159,7 +194,7 @@ func _ready():
 	# set the x-range for positioning the falling players
 	var player_size = player.get_sprite_size()
 #	var margin_factor = 4 # half this number is the # of sprite widths to leave as margin on the sice
-	xrange = (int(screenWidth-player_size.x*margin_factor))
+	xrange = (int(Constants.screenWidth-player_size.x*margin_factor))
 	x0 = player_size.x*(margin_factor/2)
 #	var xpos = randi()%xrange
 #	var xpos = randi_range(player_size.x,screenWidth-player_size.x)
@@ -168,11 +203,25 @@ func _ready():
 	# load the HUD
 	$HUD.show()
 #	$HUD.show_message("Go!")
-
+func show_hide_help():
+	if help_panel.visible == true:
+		hide_help()
+#		help_panel.visible = false
+#		octave.visible = true
+	else:
+#		help_panel.visible = true
+		octave.visible = false
+		
+func hide_help():
+#	help_panel.visible = false
+	octave.visible = true
+	
 func stop_game():
 	is_running = false
 	player.visible = false
 	defender.visible = false
+	# reset the streak 
+	streak = 0
 	# stop game and display the options
 #	if mode == USER_SELECT:
 #		$HUD.show_settings()
@@ -198,7 +247,8 @@ func stop_game():
 	go_label.queue_free()
 	# show clef
 	octave.visible = true
-	set_panel.show_instructions()
+#	set_panel.show_instructions()
+	$HUD.show_while_not_playing()
 	
 func add_label(txt,pos,sz,clr = Color(1,1,1),par=self):
 	
@@ -214,8 +264,16 @@ func add_label(txt,pos,sz,clr = Color(1,1,1),par=self):
 	par.add_child(label0)
 	return label0
 	
+#func get_dyn_font(sz = 50,clr = Color(1,1,1)):
+#	var df = DynamicFont.new()
+#	df.font_data = load('res://Fonts/Roboto-Medium.ttf')
+#	df.size = sz
+#	df.outline_color = clr
+#	return df
+	
 func start_game():
 	set_panel.hide_instructions()
+	hide_help()
 
 	if is_running:
 		# user hit "Stop"
@@ -224,22 +282,24 @@ func start_game():
 #		
 	else:
 		$HUD.hide_play_hint()
+#		$HUD.hide_help()
+#		$HUD.hide_while_playing()
 		# hide the settings panel
 		hide_settings()
 		# show instructions for 2 seconds
-		# only do this on first time playing
-		if !played_before:
-			$HUD.show_instructions()
-			# show instructions for 4 seconds
-			yield(get_tree().create_timer(1), "timeout")
-			$HUD.show_message('3')
-			yield(get_tree().create_timer(1), "timeout")
-			$HUD.show_message('2')
-			yield(get_tree().create_timer(1), "timeout")
-			$HUD.show_message('1')
-			yield(get_tree().create_timer(1), "timeout")
-			played_before = true
-		$HUD.hide_instructions()
+#		# only do this on first time playing
+#		if !played_before:
+#			$HUD.show_instructions()
+#			# show instructions for 4 seconds
+#			yield(get_tree().create_timer(1), "timeout")
+#			$HUD.show_message('3')
+#			yield(get_tree().create_timer(1), "timeout")
+#			$HUD.show_message('2')
+#			yield(get_tree().create_timer(1), "timeout")
+#			$HUD.show_message('1')
+#			yield(get_tree().create_timer(1), "timeout")
+#			played_before = true
+#		$HUD.hide_instructions()
 		player.visible = true
 		defender.visible = true
 
@@ -301,33 +361,32 @@ func level1():
 	var max_speed = 10
 #	var notes = ['A','B','C','D','E','F','G']
 	
-	# move the octave if this option is selected
-#	var move_octave = $HUD.get_move_octave_setting()
-	if move_octave:
-		var rng = RandomNumberGenerator.new()
-		rng.randomize()
-		var cur_offset = octave_x_offset
-		octave_x_offset = rng.randi_range(-max_x_offset,0)
-		# octave.position.x = octave_x_offset # use this to immediately move
-		var dx
-		if cur_offset > octave_x_offset:
-			dx = -1
-		else:
-			dx = 1
-		while abs(octave_x_offset - cur_offset) >1:
-			cur_offset += dx
-			octave.position.x = cur_offset
-#			yield(get_tree().create_timer(0.001), "timeout")
-#			print(cur_offset)
+#	# move the octave if this option is selected
+#	if move_octave:
+#		var rng = RandomNumberGenerator.new()
+#		rng.randomize()
+#		var cur_offset = octave_x_offset
+#		octave_x_offset = rng.randi_range(-max_x_offset,0)
+#		# octave.position.x = octave_x_offset # use this to immediately move
+#		var dx
+#		if cur_offset > octave_x_offset:
+#			dx = -1
+#		else:
+#			dx = 1
+#		while abs(octave_x_offset - cur_offset) >1:
+#			cur_offset += dx
+#			octave.position.x = cur_offset
+##			yield(get_tree().create_timer(0.001), "timeout")
+##			print(cur_offset)
 	
 	yield(get_tree().create_timer(0.01), "timeout")	
 	var numnotes = notes.size()
 #	print('number of notes: ', numnotes)
 	
-	# randomly select a player
-	player.switch_texture(notes[randi()%numnotes-1])
-	player.state = 'unset'
-	player.rotation = 0
+#	# randomly select a player
+#	player.switch_texture(notes[randi()%numnotes-1])
+#	player.state = 'unset'
+#	player.rotation = 0
 	# Set the player's position 
 	# pick a random x
 #	var player_size = player.get_sprite_size()
@@ -335,8 +394,19 @@ func level1():
 #	var xrange = (int(screenWidth-player_size.x*margin_factor))
 	var xpos = randi()%xrange
 #	var xpos = randi_range(player_size.x,screenWidth-player_size.x)
-	player.position = Vector2(x0 + xpos, player_height/2) #Vector2(xpos+player_size.x*(margin_factor/2+0.5),player_size.y/2)
-	player.velocity = Vector2(0,player.fall_speed)
+			# randomly select a player
+	player.visible = false
+	player.switch_texture(notes[randi()%numnotes-1])
+	player.state = 'unset'
+	player.rotation = 0
+		# wait a little bit to give time between player falling off and new player
+	yield(get_tree().create_timer(0.2), "timeout")
+	if is_running:
+
+		player.position = Vector2(x0 + xpos, player_height/2) #Vector2(xpos+player_size.x*(margin_factor/2+0.5),player_size.y/2)
+		player.velocity = Vector2(0,player.fall_speed)
+		# show the player
+		player.visible = true
 	defender.position = Vector2(-500,-off_screen_pixels) # off screen
 	defender.velocity = Vector2(0,0)
 	defender.state = 'unset'
@@ -355,9 +425,9 @@ func _process(delta): #_physics_process(delta): # trying _physics_process instea
 		if player.position.y + psize.y < 0: # above the screen 
 			# handle this in the next if statement that lets the defender dance
 			pass #level1()
-		elif player.position.x - psize.x >= screenWidth or player.position.x + psize.x < 0:
+		elif player.position.x - psize.x >= Constants.screenWidth or player.position.x + psize.x < 0:
 			level1()
-		elif player.position.y - psize.y/2 >= screenHeight: # below the screen - did not touch a key in time
+		elif player.position.y - psize.y/2 >= Constants.screenHeight: # below the screen - did not touch a key in time
 			# stop the player and reset its position to be above
 			player.velocity = Vector2(0,0)
 			player.position.y = -off_screen_pixels
@@ -452,8 +522,41 @@ func compare_key_to_player():
 						$HUD/StreakLabel.set_text('Streak bonus: \n'+ str(streak) + ' points!!')
 						$HUD/StreakLabel.visible = true
 						$HUD.update_score(score)
+						# hide the player
+						player.visible = false
+						# TODO: unhighlight the key
+						octave.selkey.reset_color()
 						yield(get_tree().create_timer(1.5), "timeout")
 						$HUD/StreakLabel.visible = false
+						# only move the octave after a streak bonus
+							# move the octave if this option is selected
+						if move_octave:
+#							# hide the player
+#							player.visible = false
+							var rng = RandomNumberGenerator.new()
+							rng.randomize()
+							var cur_offset = octave_x_offset
+							octave_x_offset = rng.randi_range(-max_x_offset,0)
+							# octave.position.x = octave_x_offset # use this to immediately move
+							# use this to move slowly
+							# set a desired amount of time, then adjust the movement accordingly
+							var dt = 0.2 # 1 second
+							var nt = 40.0 # number of timesteps
+							var dnt = dt/nt
+							var dx = (octave_x_offset - cur_offset)/nt
+#							if cur_offset > octave_x_offset:
+#								dx = -1
+#							else:
+#								dx = 1
+							while abs(octave_x_offset - cur_offset) > abs(dx): #1:
+								cur_offset += dx
+								octave.position.x = cur_offset
+								yield(get_tree().create_timer(dnt), "timeout")
+					#			print(cur_offset)
+							# give the user some time to see the offset
+#							yield(get_tree().create_timer(0.5), "timeout")
+
+							
 					player.hide_label()
 					player.state = 'unset'
 	#					octave.selkey.reset_color()
@@ -468,7 +571,7 @@ func compare_key_to_player():
 					player.state = 'incorrect'
 					defender.state = 'attack'
 					var dsize = defender.get_sprite_size()
-					defender.position.y = screenHeight + dsize.y
+					defender.position.y = Constants.screenHeight + dsize.y
 					var new_texture = octave.selkey.note
 					if '_flat' in player.notename: # knock a flat off with a flat, not a sharp
 						var key_alt_name = octave.selkey.other_name(octave.selkey.note)
@@ -493,7 +596,7 @@ func compare_key_to_player():
 					# start the defender from below the selected key
 					defender.position.x = player.position.x
 					var sprite_size = defender.get_sprite_size()
-					defender.position.y = screenHeight + sprite_size.y/2
+					defender.position.y = Constants.screenHeight + sprite_size.y/2
 					# move the defender to knock the player of his key
 	#					var nsteps = 50
 					var dx = (player.position.x - defender.position.x) 

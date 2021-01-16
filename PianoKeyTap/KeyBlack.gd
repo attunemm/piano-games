@@ -30,7 +30,17 @@ func set_color():
 func set_collision_shape():
 	var rect = $KeyShape.polygon
 	# set the collision shape
+#	
+	var percinc = 1.14 # make the collision shape larger by this factor
+	var dx
 	$KeyCollision.set_polygon(rect)
+	$KeyCollision.scale.x = percinc
+	var wdt = abs(rect[0][0] - rect[1][0])
+	if wdt == 0:
+		wdt = abs(rect[0][0] - rect[2][0])
+#		dx = wdt*(percinc-1)/2
+	dx = wdt*(1-percinc)/2
+	$KeyCollision.position.x = dx
 	
 #func init(notename):
 #
