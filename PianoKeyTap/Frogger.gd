@@ -118,10 +118,20 @@ func _ready():
 	lbl3.set("custom_fonts/font",question_font)
 	lbl3.modulate = Color(.9,.9,.9,1) #Constants.lblColorBright
 	var lbl4 = Label.new()
-	lbl4.text = "  Yes! Select the Gear icon in the top left corner to change the settings.\n   - Treble or bass clef.\n   - Staff, leger lines or both.\n   - Lines, spaces or both."
+	lbl4.text = "  Yes! Select the Gear icon in the top left corner to change the settings.\n   - Treble or bass clef.\n   - Staff, leger lines or both.\n   - Lines, spaces or both.\n"
 	lbl4.set("custom_fonts/font",answer_font)
 #	lbl4.modulate = Color(.9,.9,.9,1) #Constants.lblColorDim
 	help_panel.add_child(lbl4)
+	var lbl5 = Label.new()
+	lbl5.text = 'The animation is jumpy. Is there a way to make it smoother?'
+	help_panel.add_child(lbl5)
+	lbl5.set("custom_fonts/font",question_font)
+	lbl5.modulate = Color(.9,.9,.9,1) #Constants.lblColorBright
+	var lbl6 = Label.new()
+	lbl6.text = "  Yes! Open the game in your Chrome browser, then: \n    1. Click the 3 dots on the top right of chrome bar.\n    2. Select Settings.\n    3. Expand the Advanced option.\n    4. Choose System\n    5. Turn on Use hardware acceleration when available"
+	lbl6.set("custom_fonts/font",answer_font)
+#	lbl4.modulate = Color(.9,.9,.9,1) #Constants.lblColorDim
+	help_panel.add_child(lbl6)
 	$HUD/HelpPanel.add_child(help_panel)
 	# position the help panel
 	help_panel.rect_position = Vector2(40,40)

@@ -293,9 +293,19 @@ position = Vector2( 1392, -5 )
 scale = Vector2( 0.1, 0.1 )
 texture = SubResource( 17 )
 
+[node name="PlayButton" type="TextureButton" parent="."]
+margin_left = 1800.0
+margin_top = 25.0
+margin_right = 1914.0
+margin_bottom = 175.0
+rect_scale = Vector2( 0.8, 0.8 )
+texture_normal = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="HelpPanel" type="Panel" parent="."]
 visible = false
-margin_top = 130.0
 margin_right = 1920.0
 margin_bottom = 1080.0
 __meta__ = {
@@ -338,17 +348,6 @@ margin_bottom = 97.172
 custom_fonts/font = SubResource( 19 )
 text = "Press the arrow to begin playing"
 valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PlayButton" type="TextureButton" parent="."]
-margin_left = 1800.0
-margin_top = 25.0
-margin_right = 1914.0
-margin_bottom = 175.0
-rect_scale = Vector2( 0.8, 0.8 )
-texture_normal = ExtResource( 6 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
